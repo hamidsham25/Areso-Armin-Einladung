@@ -11,6 +11,7 @@ import Image from "next/image";
 const SECTIONS = ["home", "details", "schedule", "rsvp", "gallery"] as const;
 type SectionId = (typeof SECTIONS)[number];
 const DARK_SECTIONS: SectionId[] = ["details", "gallery"];
+const EASE_OUT = [0.22, 1, 0.36, 1] as const;
 
 /* ================================================================
    SVG Icons
@@ -106,7 +107,7 @@ const sectionContainerVariants = {
     y: 0,
     transition: {
       duration: 0.65,
-      ease: [0.22, 1, 0.36, 1],
+      ease: EASE_OUT,
       staggerChildren: 0.06,
       delayChildren: 0.03,
     },
@@ -118,7 +119,7 @@ const sectionItemVariants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
+    transition: { duration: 0.5, ease: EASE_OUT },
   },
 };
 
@@ -279,25 +280,37 @@ function BottomNav({
   onNavigate,
   musicPlaying,
   onToggleMusic,
+  isDark,
 }: {
   active: SectionId;
   onNavigate: (id: SectionId) => void;
   musicPlaying: boolean;
   onToggleMusic: () => void;
+  isDark: boolean;
 }) {
   return (
     <motion.nav
       initial={{ y: 80, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ delay: 0.4, duration: 0.6, ease: "easeOut" }}
-      className="fixed bottom-5 left-1/2 -translate-x-1/2 z-40 flex items-center gap-0.5 bg-white/90 backdrop-blur-md rounded-full px-3 py-2 shadow-lg shadow-black/8 border border-ink/[0.06]"
+      className={`fixed bottom-5 left-1/2 -translate-x-1/2 z-40 flex items-center gap-0.5 backdrop-blur-md rounded-full px-3 py-2 shadow-lg border transition-colors duration-300 ${
+        isDark
+          ? "bg-black/25 border-white/12 shadow-black/25"
+          : "bg-white/90 border-ink/[0.06] shadow-black/8"
+      }`}
     >
       {NAV_ITEMS.map(({ id, icon: Icon }) => (
         <button
           key={id}
           onClick={() => onNavigate(id)}
           className={`relative p-2.5 rounded-full transition-colors duration-200 ${
-            active === id ? "text-ink" : "text-ink/30"
+            active === id
+              ? isDark
+                ? "text-cream"
+                : "text-ink"
+              : isDark
+              ? "text-cream/35"
+              : "text-ink/30"
           }`}
           aria-label={id}
         >
@@ -312,18 +325,22 @@ function BottomNav({
         </button>
       ))}
 
-      <div className="w-px h-5 bg-ink/10 mx-1.5" />
+      <div className={`w-px h-5 mx-1.5 ${isDark ? "bg-cream/15" : "bg-ink/10"}`} />
 
       <button
         onClick={onToggleMusic}
-        className="relative p-2.5 rounded-full text-ink/70 transition-opacity duration-200"
+        className={`relative p-2.5 rounded-full transition-opacity duration-200 ${
+          isDark ? "text-cream/70" : "text-ink/70"
+        }`}
         aria-label="Toggle music"
       >
         <IconMusic className="w-[18px] h-[18px]" />
         {!musicPlaying && (
           <span
             aria-hidden="true"
-            className="absolute left-1/2 top-1/2 h-[1.5px] w-6 -translate-x-1/2 -translate-y-1/2 rotate-[-40deg] rounded-full bg-ink/70"
+            className={`absolute left-1/2 top-1/2 h-[1.5px] w-6 -translate-x-1/2 -translate-y-1/2 rotate-[-40deg] rounded-full ${
+              isDark ? "bg-cream/70" : "bg-ink/70"
+            }`}
           />
         )}
       </button>
@@ -649,6 +666,7 @@ export default function Wedding() {
             onNavigate={scrollTo}
             musicPlaying={musicPlaying}
             onToggleMusic={handleToggleMusic}
+            isDark={isDark}
           />
           <PageDots
             active={activeSection}
