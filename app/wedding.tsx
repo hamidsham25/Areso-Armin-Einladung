@@ -293,7 +293,7 @@ function BottomNav({
       initial={{ y: 80, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ delay: 0.4, duration: 0.6, ease: "easeOut" }}
-      className={`fixed bottom-5 left-1/2 -translate-x-1/2 z-40 flex items-center gap-0.5 backdrop-blur-md rounded-full px-3 py-2 shadow-lg border transition-colors duration-300 ${
+      className={`fixed bottom-3.5 left-1/2 -translate-x-1/2 z-40 flex items-center gap-0.5 backdrop-blur-md rounded-full px-2.5 py-1.5 shadow-lg border transition-colors duration-300 ${
         isDark
           ? "bg-black/25 border-white/12 shadow-black/25"
           : "bg-white/90 border-ink/[0.06] shadow-black/8"
@@ -314,7 +314,7 @@ function BottomNav({
           }`}
           aria-label={id}
         >
-          <Icon className="w-[18px] h-[18px]" />
+          <Icon className="w-4 h-4" />
           {active === id && (
             <motion.span
               layoutId="nav-dot"
@@ -325,16 +325,16 @@ function BottomNav({
         </button>
       ))}
 
-      <div className={`w-px h-5 mx-1.5 ${isDark ? "bg-cream/15" : "bg-ink/10"}`} />
+      <div className={`w-px h-4 mx-1.5 ${isDark ? "bg-cream/15" : "bg-ink/10"}`} />
 
       <button
         onClick={onToggleMusic}
-        className={`relative p-2.5 rounded-full transition-opacity duration-200 ${
+        className={`relative p-2 rounded-full transition-opacity duration-200 ${
           isDark ? "text-cream/70" : "text-ink/70"
         }`}
         aria-label="Toggle music"
       >
-        <IconMusic className="w-[18px] h-[18px]" />
+        <IconMusic className="w-4 h-4" />
         {!musicPlaying && (
           <span
             aria-hidden="true"
@@ -366,13 +366,13 @@ function PageDots({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ delay: 0.6 }}
-      className="fixed right-4 top-1/2 -translate-y-1/2 z-40 flex flex-col gap-2.5"
+      className="fixed right-3 top-1/2 -translate-y-1/2 z-40 flex flex-col gap-2"
     >
       {SECTIONS.map((id) => (
         <button
           key={id}
           onClick={() => onNavigate(id)}
-          className={`w-2 h-2 rounded-full transition-all duration-300 ${
+          className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
             active === id
               ? "bg-gold scale-125"
               : isDark
@@ -474,29 +474,29 @@ export default function Wedding() {
         {/* ── HOME ─────────────────────────────────────── */}
         <section
           ref={(el) => { sectionRefs.current.home = el; }}
-          className="snap-section h-[100svh] flex flex-col items-center justify-center bg-cream px-7 text-center"
+          className="snap-section h-[100svh] flex flex-col items-center justify-center bg-cream px-6 pt-6 pb-24 text-center"
         >
           <AnimatedSectionContent isActive={activeSection === "home"}>
             <motion.div variants={sectionItemVariants}>
               <VenueIllustration />
             </motion.div>
-            <motion.p variants={sectionItemVariants} className="font-sc text-gold/60 text-[11px] tracking-[0.4em] uppercase mt-7">
+            <motion.p variants={sectionItemVariants} className="font-sc text-gold/60 text-[10px] tracking-[0.38em] uppercase mt-6">
               Hochzeitseinladung
             </motion.p>
             <motion.div variants={sectionItemVariants}>
               <Divider className="mt-9" />
             </motion.div>
-            <motion.h1 variants={sectionItemVariants} className="font-display text-ink text-[3.45rem] leading-none italic font-light mt-9">
+            <motion.h1 variants={sectionItemVariants} className="font-display text-ink text-[3rem] leading-none italic font-light mt-8">
               Areso
             </motion.h1>
-            <motion.p variants={sectionItemVariants} className="font-display text-gold text-2xl italic mt-2">&amp;</motion.p>
-            <motion.h1 variants={sectionItemVariants} className="font-display text-ink text-[3.45rem] leading-none italic font-light mt-2">
+            <motion.p variants={sectionItemVariants} className="font-display text-gold text-xl italic mt-1.5">&amp;</motion.p>
+            <motion.h1 variants={sectionItemVariants} className="font-display text-ink text-[3rem] leading-none italic font-light mt-1.5">
               Armin
             </motion.h1>
             <motion.div variants={sectionItemVariants}>
               <Divider className="mt-9" />
             </motion.div>
-            <motion.p variants={sectionItemVariants} className="font-sc text-gray/70 text-[11px] tracking-[0.3em] uppercase mt-9">
+            <motion.p variants={sectionItemVariants} className="font-sc text-gray/70 text-[10px] tracking-[0.28em] uppercase mt-8">
               Friday, September 4th, 2026
             </motion.p>
           </AnimatedSectionContent>
@@ -505,13 +505,13 @@ export default function Wedding() {
         {/* ── DETAILS ──────────────────────────────────── */}
         <section
           ref={(el) => { sectionRefs.current.details = el; }}
-          className="snap-section h-[100svh] flex flex-col items-center justify-center bg-ink px-7 text-center"
+          className="snap-section h-[100svh] flex flex-col items-center justify-center bg-ink px-6 pt-6 pb-24 text-center"
         >
           <AnimatedSectionContent isActive={activeSection === "details"}>
             <motion.div variants={sectionItemVariants}>
-              <IconPin className="w-9 h-9 text-gold/50 mx-auto" />
+              <IconPin className="w-8 h-8 text-gold/50 mx-auto" />
             </motion.div>
-            <motion.p variants={sectionItemVariants} className="font-sc text-gold/60 text-[11px] tracking-[0.4em] uppercase mt-3.5">
+            <motion.p variants={sectionItemVariants} className="font-sc text-gold/60 text-[10px] tracking-[0.36em] uppercase mt-3">
               The Details
             </motion.p>
             <motion.div variants={sectionItemVariants}>
@@ -522,17 +522,17 @@ export default function Wedding() {
               <p className="font-sc text-gold/50 text-[10px] tracking-[0.35em] uppercase">
                 Location
               </p>
-              <p className="font-display text-cream text-2xl font-medium mt-2.5">
+              <p className="font-display text-cream text-xl font-medium mt-2">
                 Haverlahwiese
               </p>
-              <p className="font-display text-cream/60 text-base font-light mt-1.5 leading-relaxed">
+              <p className="font-display text-cream/60 text-[15px] font-light mt-1 leading-relaxed">
                 Gustedter Str. 201, 38229 Salzgitter
               </p>
-              <p className="font-display text-gold/70 text-base italic mt-2.5">
+              <p className="font-display text-gold/70 text-[15px] italic mt-2">
                 Arrive from 16:30
               </p>
               <a
-                href="https://maps.google.com/?q=Gustedter+Str.+201+38229+Salzgitter"
+                href="https://www.google.com/maps/place/Eventlocation+Haverlahwiese/@52.0959001,10.3276364,1135m/data=!3m1!1e3!4m15!1m8!3m7!1s0x47a5500dc0cd43c1:0xc6f9ce343e0dbc37!2sGustedter+Str.+201,+38229+Salzgitter!3b1!8m2!3d52.0957711!4d10.3318371!16s%2Fg%2F11bw3xlpzn!3m5!1s0x47a5500c45b1c3ad:0xe38dd5915f2aa856!8m2!3d52.0961856!4d10.3350609!16s%2Fg%2F11cs40prky?entry=ttu&g_ep=EgoyMDI2MDMyOS4wIKXMDSoASAFQAw%3D%3D"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-block font-sc text-gold text-[10px] tracking-[0.25em] uppercase mt-3.5 border-b border-gold/30 pb-0.5 hover:border-gold transition-colors"
@@ -545,7 +545,7 @@ export default function Wedding() {
               <p className="font-sc text-gold/50 text-[10px] tracking-[0.35em] uppercase">
                 Additional Info
               </p>
-              <p className="font-display text-cream/60 text-base font-light mt-2.5">
+              <p className="font-display text-cream/60 text-[15px] font-light mt-2">
                 Parkmöglichkeiten sind gegeben.
               </p>
             </motion.div>
@@ -559,7 +559,7 @@ export default function Wedding() {
                 className="inline-flex items-center gap-2.5 mt-2.5 text-cream/70 hover:text-cream transition-colors"
               >
                 <IconPhone className="w-4 h-4" />
-                <span className="font-display text-base font-light">015254104825</span>
+              <span className="font-display text-[15px] font-light">015254104825</span>
               </a>
             </motion.div>
           </AnimatedSectionContent>
@@ -568,16 +568,16 @@ export default function Wedding() {
         {/* ── SCHEDULE ─────────────────────────────────── */}
         <section
           ref={(el) => { sectionRefs.current.schedule = el; }}
-          className="snap-section h-[100svh] flex flex-col items-center justify-center bg-cream px-7 text-center"
+          className="snap-section h-[100svh] flex flex-col items-center justify-center bg-cream px-6 pt-6 pb-24 text-center"
         >
           <AnimatedSectionContent isActive={activeSection === "schedule"}>
             <motion.div variants={sectionItemVariants}>
-              <IconClock className="w-9 h-9 text-gold/50 mx-auto" />
+              <IconClock className="w-8 h-8 text-gold/50 mx-auto" />
             </motion.div>
-            <motion.p variants={sectionItemVariants} className="font-sc text-gold/60 text-[11px] tracking-[0.4em] uppercase mt-3.5">
+            <motion.p variants={sectionItemVariants} className="font-sc text-gold/60 text-[10px] tracking-[0.36em] uppercase mt-3">
               The Schedule
             </motion.p>
-            <motion.h2 variants={sectionItemVariants} className="font-display text-ink text-[1.9rem] italic font-light mt-5">
+            <motion.h2 variants={sectionItemVariants} className="font-display text-ink text-[1.7rem] italic font-light mt-4">
               Order of the Day
             </motion.h2>
             <motion.div variants={sectionItemVariants}>
@@ -590,36 +590,36 @@ export default function Wedding() {
         {/* ── RSVP ─────────────────────────────────────── */}
         <section
           ref={(el) => { sectionRefs.current.rsvp = el; }}
-          className="snap-section h-[100svh] flex flex-col items-center justify-center bg-cream px-7 text-center"
+          className="snap-section h-[100svh] flex flex-col items-center justify-center bg-cream px-6 pt-6 pb-24 text-center"
         >
           <AnimatedSectionContent isActive={activeSection === "rsvp"}>
             <motion.div variants={sectionItemVariants}>
-              <IconMail className="w-9 h-9 text-gold/50 mx-auto" />
+              <IconMail className="w-8 h-8 text-gold/50 mx-auto" />
             </motion.div>
-            <motion.p variants={sectionItemVariants} className="font-sc text-gold/60 text-[11px] tracking-[0.4em] uppercase mt-3.5">
+            <motion.p variants={sectionItemVariants} className="font-sc text-gold/60 text-[10px] tracking-[0.36em] uppercase mt-3">
               RSVP
             </motion.p>
-            <motion.h2 variants={sectionItemVariants} className="font-display text-ink text-[1.9rem] font-light mt-6 leading-snug">
+            <motion.h2 variants={sectionItemVariants} className="font-display text-ink text-[1.7rem] font-light mt-5 leading-snug">
               We&apos;d love to
             </motion.h2>
-            <motion.h2 variants={sectionItemVariants} className="font-display text-gold text-[1.9rem] italic font-light leading-snug">
+            <motion.h2 variants={sectionItemVariants} className="font-display text-gold text-[1.7rem] italic font-light leading-snug">
               see you there
             </motion.h2>
             <motion.div variants={sectionItemVariants}>
               <Divider className="mt-5" />
             </motion.div>
-            <motion.p variants={sectionItemVariants} className="font-display text-gray text-base font-light leading-relaxed mt-7 max-w-[300px]">
+            <motion.p variants={sectionItemVariants} className="font-display text-gray text-[15px] font-light leading-relaxed mt-6 max-w-[290px]">
               Wir freuen uns auf euch und können es nicht erwarten diesen
               besonderen Tag mit euch zu verbringen!
             </motion.p>
-            <motion.div variants={sectionItemVariants} className="flex flex-col gap-3.5 w-full max-w-[300px] mt-9">
-              <button className="w-full py-3.5 border border-ink/12 font-sc text-ink text-[11px] tracking-[0.25em] uppercase transition-colors duration-200 hover:bg-gold hover:text-white hover:border-gold active:bg-gold active:text-white active:border-gold">
+            <motion.div variants={sectionItemVariants} className="flex flex-col gap-3 w-full max-w-[290px] mt-8">
+              <button className="w-full py-3 border border-ink/12 font-sc text-ink text-[10px] tracking-[0.23em] uppercase transition-colors duration-200 hover:bg-gold hover:text-white hover:border-gold active:bg-gold active:text-white active:border-gold">
                 Joyfully Accept
               </button>
-              <button className="w-full py-3.5 border border-ink/12 font-sc text-ink text-[11px] tracking-[0.25em] uppercase transition-colors duration-200 hover:bg-gold hover:text-white hover:border-gold active:bg-gold active:text-white active:border-gold">
+              <button className="w-full py-3 border border-ink/12 font-sc text-ink text-[10px] tracking-[0.23em] uppercase transition-colors duration-200 hover:bg-gold hover:text-white hover:border-gold active:bg-gold active:text-white active:border-gold">
                 Regretfully Decline
               </button>
-              <button className="w-full py-3.5 border border-ink/12 font-sc text-ink text-[11px] tracking-[0.25em] uppercase transition-colors duration-200 hover:bg-gold hover:text-white hover:border-gold active:bg-gold active:text-white active:border-gold">
+              <button className="w-full py-3 border border-ink/12 font-sc text-ink text-[10px] tracking-[0.23em] uppercase transition-colors duration-200 hover:bg-gold hover:text-white hover:border-gold active:bg-gold active:text-white active:border-gold">
                 Not Sure Yet
               </button>
             </motion.div>
@@ -629,19 +629,19 @@ export default function Wedding() {
         {/* ── GALLERY ──────────────────────────────────── */}
         <section
           ref={(el) => { sectionRefs.current.gallery = el; }}
-          className="snap-section bg-ink px-6 pt-16 pb-24 text-center"
+          className="snap-section bg-ink px-5 pt-14 pb-24 text-center"
         >
           <AnimatedSectionContent isActive={activeSection === "gallery"}>
             <motion.div variants={sectionItemVariants}>
-              <IconCamera className="w-9 h-9 text-gold/50 mx-auto" />
+              <IconCamera className="w-8 h-8 text-gold/50 mx-auto" />
             </motion.div>
-            <motion.p variants={sectionItemVariants} className="font-sc text-gold/60 text-[11px] tracking-[0.4em] uppercase mt-3.5">
+            <motion.p variants={sectionItemVariants} className="font-sc text-gold/60 text-[10px] tracking-[0.36em] uppercase mt-3">
               Moments
             </motion.p>
-            <motion.h2 variants={sectionItemVariants} className="font-display text-cream text-[1.9rem] italic font-light mt-5">
+            <motion.h2 variants={sectionItemVariants} className="font-display text-cream text-[1.7rem] italic font-light mt-4">
               Our Story So Far
             </motion.h2>
-            <motion.div variants={sectionItemVariants} className="grid grid-cols-2 gap-2 mt-9">
+            <motion.div variants={sectionItemVariants} className="grid grid-cols-2 gap-1.5 mt-7">
               {GALLERY_IMAGES.map((src, i) => (
                 <motion.div key={i} variants={sectionItemVariants} className="relative aspect-[4/5] overflow-hidden rounded">
                   <Image
