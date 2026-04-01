@@ -1,26 +1,104 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ── Design tokens ───────────────────────────────────── */
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-cream: #FAF8F4;
+  --color-gold: #C9A96E;
+  --color-ink: #1A1714;
+  --color-gray: #6B6560;
+  --color-white: #FFFFFF;
+  --font-display: var(--font-cormorant);
+  --font-sc: var(--font-cormorant-sc);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ── Base ─────────────────────────────────────────────── */
+
+html {
+  scroll-behavior: smooth;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  background: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-display), "Times New Roman", serif;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Image section gradient overlays ─────────────────── */
+
+.image-section {
+  position: relative;
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(0,0,0,0.05) 7%,
+    rgba(0,0,0,0.2) 15%,
+    rgba(0,0,0,0.5) 25%,
+    rgba(0,0,0,0.85) 35%,
+    black 45%,
+    black 55%,
+    rgba(0,0,0,0.85) 65%,
+    rgba(0,0,0,0.5) 75%,
+    rgba(0,0,0,0.2) 85%,
+    rgba(0,0,0,0.05) 93%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(0,0,0,0.05) 7%,
+    rgba(0,0,0,0.2) 15%,
+    rgba(0,0,0,0.5) 25%,
+    rgba(0,0,0,0.85) 35%,
+    black 45%,
+    black 55%,
+    rgba(0,0,0,0.85) 65%,
+    rgba(0,0,0,0.5) 75%,
+    rgba(0,0,0,0.2) 85%,
+    rgba(0,0,0,0.05) 93%,
+    transparent 100%
+  );
+}
+
+.image-section-hero {
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    black 0%,
+    black 55%,
+    rgba(0,0,0,0.85) 65%,
+    rgba(0,0,0,0.5) 75%,
+    rgba(0,0,0,0.2) 85%,
+    rgba(0,0,0,0.05) 93%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    black 0%,
+    black 55%,
+    rgba(0,0,0,0.85) 65%,
+    rgba(0,0,0,0.5) 75%,
+    rgba(0,0,0,0.2) 85%,
+    rgba(0,0,0,0.05) 93%,
+    transparent 100%
+  );
+}
+
+/* ── Keyframes ────────────────────────────────────────── */
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 0.35; }
+  50%      { opacity: 1; }
+}
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(32px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft 2.6s ease-in-out infinite;
 }
