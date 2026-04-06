@@ -6,43 +6,14 @@ import emailjs from "@emailjs/browser";
 import {
   formatGuestNamesForEmail,
   getGuestCapacity,
+  guestDisplayLabel,
   type GuestEntry,
 } from "@/lib/guests";
-
-type ResponseKind = "ja" | "nein" | "vielleicht";
-
-function buildEmailJsParams(
-  response: ResponseKind,
-  rest: {
-    guest_slug: string;
-    guest_label: string;
-    guest_names: string;
-    guest_count: string;
-    notes: string;
-    attending_names: string;
-    not_attending_names: string;
-  }
-) {
-  const ja = response === "ja";
-  const nein = response === "nein";
-  const vielleicht = response === "vielleicht";
-
-  return {
-    ...rest,
-    antwort: response,
-    antwort_ja: ja ? "1" : "0",
-    antwort_nein: nein ? "1" : "0",
-    antwort_vielleicht: vielleicht ? "1" : "0",
-    antwort_text:
-      response === "ja" ? "Ja" : response === "nein" ? "Nein" : "Vielleicht",
-    antwort_label_en:
-      response === "ja"
-        ? "Joyfully Accept"
-        : response === "nein"
-          ? "Regretfully Decline"
-          : "Not Sure Yet",
-  };
-}
+import {
+  buildRsvpEmailTemplateFields,
+  emailJsEnvConfigured,
+  type ResponseKind,
+} from "@/lib/rsvp-email";
 
 function initAttendingMap(
   guest: GuestEntry | undefined,
@@ -188,7 +159,7 @@ function RsvpFormInner({
   onClose: () => void;
 }) {
   const slug = guest?.slug ?? "website";
-  const label = guest?.label ?? "Öffentliche Einladung";
+  const label = guest ? guestDisplayLabel(guest) : "Öffentliche Einladung";
   const namesOnInvite = guest?.names ?? EMPTY_NAMES;
   const hasNameList = namesOnInvite.length > 0;
   const maxGuests = getGuestCapacity(guest);
@@ -247,30 +218,40 @@ function RsvpFormInner({
     }
     setValidationError(null);
 
+    if (!emailJsEnvConfigured()) {
+      setStatus("error");
+      return;
+    }
+
     setStatus("sending");
     try {
-      const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!;
-      const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!;
-      const templateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!;
+      const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!.trim();
+      const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!.trim();
+      const templateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!.trim();
 
       const guestCountStr = hasNameList
         ? String(attendingCount)
         : String(safeCount);
 
-      await emailjs.send(
-        serviceId,
-        templateId,
-        buildEmailJsParams(response, {
-          guest_slug: slug,
-          guest_label: label,
-          guest_names: namesList,
-          guest_count: guestCountStr,
-          notes: notes.trim() || "—",
-          attending_names: hasNameList ? attendingNames || "—" : "—",
-          not_attending_names: hasNameList ? notAttendingNames || "—" : "—",
-        }),
-        { publicKey }
-      );
+      const pageUrl =
+        typeof window !== "undefined" ? window.location.href : "";
+
+      const templateParams = buildRsvpEmailTemplateFields({
+        guest,
+        response,
+        guestSlug: slug,
+        hasNameList,
+        namesOnInvite,
+        attendingNames: hasNameList ? attendingNames : "",
+        notAttendingNames: hasNameList ? notAttendingNames : "",
+        guestCountStr,
+        notesTrimmed: notes.trim(),
+        pageUrl,
+      });
+
+      await emailjs.send(serviceId, templateId, templateParams, {
+        publicKey,
+      });
       setStatus("success");
     } catch {
       setStatus("error");
@@ -316,6 +297,12 @@ function RsvpFormInner({
         {response === "nein" && "Regretfully Decline"}
         {response === "vielleicht" && "Not Sure Yet"}
       </p>
+
+      {guest?.inviteNote && (
+        <p className="font-display text-ink/80 text-[13px] font-light leading-relaxed border border-ink/10 rounded-lg px-3 py-2.5 bg-ink/[0.02]">
+          {guest.inviteNote}
+        </p>
+      )}
 
       {hasNameList && (
         <fieldset className="border-0 p-0 m-0">
@@ -399,8 +386,9 @@ function RsvpFormInner({
 
       {status === "error" && (
         <p className="font-display text-[13px] text-red-900/80 text-center">
-          Das hat leider nicht geklappt. Bitte versucht es später erneut oder
-          meldet euch direkt.
+          {!emailJsEnvConfigured()
+            ? "E-Mail ist noch nicht konfiguriert (Umgebungsvariablen für EmailJS fehlen)."
+            : "Das hat leider nicht geklappt. Bitte versucht es später erneut oder meldet euch direkt."}
         </p>
       )}
 

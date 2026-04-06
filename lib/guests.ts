@@ -2,18 +2,31 @@ import guestsData from "@/data/guests.json";
 
 export type GuestEntry = {
   slug: string;
-  /** Kurzname für E-Mails / interne Zuordnung */
-  label: string;
+  /** Kurzname für Tab-Titel / E-Mail; optional — Fallback: Namenliste */
+  label?: string;
+  /** Einladung von der Braut (Areso) oder vom Bräutigam (Armin) */
+  side?: "areso" | "armin";
   /**
    * Eingeladene Personen pro Einladungslink.
    * Die maximale wählbare „Anzahl Personen“ im RSVP entspricht `names.length`.
    */
   names: string[];
-  /** Anrede / persönliche Zeile */
+  /** Anrede / persönliche Zeile (reserviert für künftige Nutzung) */
   greeting: string;
   /** Optionaler Absatz unter der Begrüßung */
   namesLine?: string;
+  /** Wenn gesetzt: Einladung gilt ohne Kinder — erscheint im Einladungstext und im RSVP */
+  inviteNote?: string;
 };
+
+/** Tab-Titel, E-Mail-Vorschau */
+export function guestDisplayLabel(guest: GuestEntry | undefined): string {
+  if (!guest) return "Einladung";
+  const l = guest.label?.trim();
+  if (l) return l;
+  if (guest.names.length) return guest.names.join(", ");
+  return "Einladung";
+}
 
 const guests = guestsData as GuestEntry[];
 
@@ -56,10 +69,12 @@ export function guestIsPlural(guest: GuestEntry): boolean {
   return guest.names.length > 1;
 }
 
-/** Texte für die Details-Section (Singular/Plural). Ohne Gast: neutrale Mehrzahl. */
+/** Texte für die Einladungs-Section (Singular/Plural). Ohne Gast: neutrale Mehrzahl. */
 export function buildDetailsInvitationCopy(guest: GuestEntry | undefined): {
   line1: string;
   line2: string;
+  /** Nur bei „ohne Kinder“-Einladungen: klarer Hinweis im Fließtext */
+  line3?: string;
 } {
   if (!guest || guest.names.length === 0) {
     return {
@@ -73,10 +88,14 @@ export function buildDetailsInvitationCopy(guest: GuestEntry | undefined): {
   const first = formatFirstNamesGerman(guestFirstNames(guest));
   const mit = plural ? "euch" : "dir";
   const acc = plural ? "euch" : "dich";
-  return {
+  const base = {
     line1: `Wir heiraten — und möchten diesen besonderen Tag mit ${mit} feiern 💍`,
     line2: `Liebe ${first}, wir laden ${acc} zu unserer Hochzeit ein und würden uns sehr freuen, ${acc} dabei an unserer Seite zu haben.`,
   };
+  if (guest.inviteNote?.trim()) {
+    return { ...base, line3: "Ohne Kinder." };
+  }
+  return base;
 }
 
 /** RSVP-Frist; „gib“ (du) vs „gebt“ (ihr). */

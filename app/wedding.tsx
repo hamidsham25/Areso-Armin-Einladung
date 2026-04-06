@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, type ReactNode } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import Image from "next/image";
 import { RsvpForm } from "@/app/components/RsvpForm";
 import {
@@ -141,23 +141,226 @@ const sectionItemVariants = {
   },
 };
 
+type SectionContainerVariants = typeof sectionContainerVariants;
+
 function AnimatedSectionContent({
   isActive,
   className,
   children,
+  containerVariants = sectionContainerVariants,
 }: {
   isActive: boolean;
   className?: string;
   children: ReactNode;
+  containerVariants?: SectionContainerVariants;
 }) {
   return (
     <motion.div
-      variants={sectionContainerVariants}
+      variants={containerVariants}
       initial={false}
       animate={isActive ? "visible" : "hidden"}
       className={className}
     >
       {children}
+    </motion.div>
+  );
+}
+
+/* ── Section-specific container timings (stronger stagger than default) ── */
+
+const inviteContainerVariants: SectionContainerVariants = {
+  hidden: { opacity: 0.28, y: 22 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.7,
+      ease: EASE_OUT,
+      staggerChildren: 0.14,
+      delayChildren: 0.06,
+    },
+  },
+};
+
+const detailsContainerVariants: SectionContainerVariants = {
+  hidden: { opacity: 0.28, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.72,
+      ease: EASE_OUT,
+      staggerChildren: 0.16,
+      delayChildren: 0.05,
+    },
+  },
+};
+
+const rsvpContainerVariants: SectionContainerVariants = {
+  hidden: { opacity: 0.28, y: 22 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.72,
+      ease: EASE_OUT,
+      staggerChildren: 0.13,
+      delayChildren: 0.08,
+    },
+  },
+};
+
+const galleryContainerVariants: SectionContainerVariants = {
+  hidden: { opacity: 0.28, y: 18 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.68,
+      ease: EASE_OUT,
+      staggerChildren: 0.1,
+      delayChildren: 0.1,
+    },
+  },
+};
+
+const scheduleContainerVariants: SectionContainerVariants = {
+  hidden: { opacity: 0.28, y: 18 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.68,
+      ease: EASE_OUT,
+      staggerChildren: 0.11,
+      delayChildren: 0.06,
+    },
+  },
+};
+
+/* ── Home: hero house → text (sequence like schedule drama) ── */
+
+function HomeSectionContent({ isActive }: { isActive: boolean }) {
+  const reduceMotion = useReducedMotion();
+  const rm = reduceMotion === true;
+
+  const homeRootVariants = {
+    hidden: {},
+    visible: {
+      transition: {
+        staggerChildren: rm ? 0.12 : 0.48,
+        delayChildren: 0,
+      },
+    },
+  };
+
+  const homeHouseVariants = {
+    hidden: {
+      scale: rm ? 1 : 1.92,
+      opacity: rm ? 0 : 0.78,
+      filter: rm ? "blur(0px)" : "blur(5px)",
+    },
+    visible: {
+      scale: 1,
+      opacity: 1,
+      filter: "blur(0px)",
+      transition: { duration: rm ? 0.38 : 0.98, ease: EASE_OUT },
+    },
+  };
+
+  const homeTextStackVariants = {
+    hidden: {},
+    visible: {
+      transition: {
+        staggerChildren: rm ? 0.07 : 0.12,
+        delayChildren: rm ? 0 : 0.04,
+      },
+    },
+  };
+
+  const homeSoftLineVariants = {
+    hidden: { opacity: 0, y: 18, filter: "blur(8px)" },
+    visible: {
+      opacity: 1,
+      y: 0,
+      filter: "blur(0px)",
+      transition: { duration: 0.55, ease: EASE_OUT },
+    },
+  };
+
+  const homeNameVariants = {
+    hidden: { opacity: 0, y: 22, scale: 0.94 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: { duration: 0.62, ease: EASE_OUT },
+    },
+  };
+
+  const homeAmpersandVariants = {
+    hidden: { opacity: 0, scale: 0.6, rotate: -8 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      rotate: 0,
+      transition: { type: "spring" as const, stiffness: 280, damping: 20 },
+    },
+  };
+
+  return (
+    <motion.div
+      variants={homeRootVariants}
+      initial={false}
+      animate={isActive ? "visible" : "hidden"}
+      className="flex flex-col items-center text-center"
+    >
+      <motion.div
+        variants={homeHouseVariants}
+        className="origin-top will-change-transform"
+      >
+        <VenueIllustration />
+      </motion.div>
+
+      <motion.div variants={homeTextStackVariants} className="flex flex-col items-center w-full">
+        <motion.p
+          variants={homeSoftLineVariants}
+          className="font-sc text-gold/60 text-[10px] tracking-[0.38em] uppercase mt-6"
+        >
+          Hochzeitseinladung
+        </motion.p>
+        <motion.div variants={homeSoftLineVariants}>
+          <Divider className="mt-9" />
+        </motion.div>
+        <motion.h1
+          variants={homeNameVariants}
+          className="font-display text-ink text-[clamp(2.65rem,9vw,3.35rem)] leading-[1.02] font-light tracking-[-0.02em] not-italic mt-8"
+        >
+          Areso
+        </motion.h1>
+        <motion.p
+          variants={homeAmpersandVariants}
+          className="font-script text-gold text-[clamp(2.35rem,7.5vw,3rem)] leading-none mt-2.5"
+          aria-hidden="true"
+        >
+          &amp;
+        </motion.p>
+        <motion.h1
+          variants={homeNameVariants}
+          className="font-display text-ink text-[clamp(2.65rem,9vw,3.35rem)] leading-[1.02] font-light tracking-[-0.02em] not-italic mt-2.5"
+        >
+          Armin
+        </motion.h1>
+        <motion.div variants={homeSoftLineVariants}>
+          <Divider className="mt-9" />
+        </motion.div>
+        <motion.p
+          variants={homeSoftLineVariants}
+          className="font-sc text-gray/70 text-[10px] tracking-[0.28em] uppercase mt-8"
+        >
+          Friday, September 4th, 2026
+        </motion.p>
+      </motion.div>
     </motion.div>
   );
 }
@@ -201,26 +404,252 @@ const SCHEDULE = [
   { time: "20:30", event: "Programm und Feier" },
 ];
 
-function Timeline() {
+const timelineTimeVariants = {
+  hidden: { opacity: 0, x: -14 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: { duration: 0.4, ease: EASE_OUT },
+  },
+};
+
+const timelineDotVariants = {
+  hidden: { scale: 0, opacity: 0 },
+  visible: {
+    scale: 1,
+    opacity: 1,
+    transition: { type: "spring" as const, stiffness: 440, damping: 26 },
+  },
+};
+
+const timelineLineVariants = {
+  hidden: { scaleY: 0, opacity: 0 },
+  visible: {
+    scaleY: 1,
+    opacity: 1,
+    transition: { duration: 0.45, ease: EASE_OUT },
+  },
+};
+
+const timelineLabelVariants = {
+  hidden: { opacity: 0, x: 12 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: { duration: 0.4, ease: EASE_OUT },
+  },
+};
+
+function Timeline({ isActive }: { isActive: boolean }) {
+  const reduceMotion = useReducedMotion();
+  const betweenRows = reduceMotion ? 0 : 0.28;
+  const betweenTimeColumnAndLabel = reduceMotion ? 0 : 0.2;
+  const betweenDotAndLine = reduceMotion ? 0 : 0.1;
+
+  const timelineRootVariants = {
+    hidden: {},
+    visible: {
+      transition: {
+        staggerChildren: betweenRows,
+        delayChildren: reduceMotion ? 0 : 0.14,
+      },
+    },
+  };
+
+  const timelineRowVariants = {
+    hidden: {},
+    visible: {
+      transition: {
+        staggerChildren: betweenTimeColumnAndLabel,
+        staggerDirection: 1,
+      },
+    },
+  };
+
+  const columnVariants = {
+    hidden: {},
+    visible: {
+      transition: {
+        staggerChildren: betweenDotAndLine,
+      },
+    },
+  };
+
   return (
     <motion.div variants={sectionItemVariants} className="w-full max-w-[280px] mx-auto mt-10 text-left">
-      {SCHEDULE.map((item, i) => (
-        <motion.div key={i} variants={sectionItemVariants} className="flex items-start gap-6">
-          <p className="font-display text-ink text-[1.05rem] font-light w-14 text-right shrink-0 pt-0.5">
-            {item.time}
-          </p>
-          <div className="flex flex-col items-center shrink-0">
-            <div className="w-3 h-3 rounded-full bg-gold mt-1.5" />
-            {i < SCHEDULE.length - 1 && <div className="w-px h-14 bg-gold/25" />}
-          </div>
-          <p className="font-display text-ink text-[1.05rem] font-light pt-0.5">
-            {item.event}
-          </p>
-        </motion.div>
-      ))}
+      <motion.div
+        variants={timelineRootVariants}
+        initial={false}
+        animate={isActive ? "visible" : "hidden"}
+      >
+        {SCHEDULE.map((item, i) => (
+          <motion.div key={i} variants={timelineRowVariants} className="flex items-start gap-6">
+            <motion.p
+              variants={timelineTimeVariants}
+              className="font-display text-ink text-[1.05rem] font-light w-14 text-right shrink-0 pt-0.5"
+            >
+              {item.time}
+            </motion.p>
+            <motion.div variants={columnVariants} className="flex flex-col items-center shrink-0">
+              <motion.div
+                variants={timelineDotVariants}
+                className="w-3 h-3 rounded-full bg-gold mt-1.5"
+              />
+              {i < SCHEDULE.length - 1 && (
+                <motion.div
+                  variants={timelineLineVariants}
+                  style={{ transformOrigin: "top center" }}
+                  className="w-px h-14 bg-gold/25"
+                />
+              )}
+            </motion.div>
+            <motion.p
+              variants={timelineLabelVariants}
+              className="font-display text-ink text-[1.05rem] font-light pt-0.5"
+            >
+              {item.event}
+            </motion.p>
+          </motion.div>
+        ))}
+      </motion.div>
     </motion.div>
   );
 }
+
+const galleryGridVariants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.075,
+      delayChildren: 0.08,
+    },
+  },
+};
+
+const rsvpHeadlinePrimaryVariants = {
+  hidden: { opacity: 0, x: -32, filter: "blur(8px)" },
+  visible: {
+    opacity: 1,
+    x: 0,
+    filter: "blur(0px)",
+    transition: { duration: 0.62, ease: EASE_OUT },
+  },
+};
+
+const rsvpHeadlineAccentVariants = {
+  hidden: { opacity: 0, x: 32, filter: "blur(8px)" },
+  visible: {
+    opacity: 1,
+    x: 0,
+    filter: "blur(0px)",
+    transition: { duration: 0.62, ease: EASE_OUT, delay: 0.08 },
+  },
+};
+
+const inviteIconVariants = {
+  hidden: { opacity: 0, scale: 0.75, rotate: -14 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    rotate: 0,
+    transition: { type: "spring" as const, stiffness: 300, damping: 20 },
+  },
+};
+
+const inviteLineVariants = {
+  hidden: { opacity: 0, y: 26, filter: "blur(10px)" },
+  visible: {
+    opacity: 1,
+    y: 0,
+    filter: "blur(0px)",
+    transition: { duration: 0.62, ease: EASE_OUT },
+  },
+};
+
+const detailsPinVariants = {
+  hidden: { opacity: 0, y: -36, rotate: -12 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    rotate: 0,
+    transition: { type: "spring" as const, stiffness: 260, damping: 22 },
+  },
+};
+
+const detailsBlockVariants = {
+  hidden: (i: number) => ({
+    opacity: 0,
+    x: i % 2 === 0 ? -36 : 36,
+    y: 14,
+    filter: "blur(6px)",
+  }),
+  visible: {
+    opacity: 1,
+    x: 0,
+    y: 0,
+    filter: "blur(0px)",
+    transition: { duration: 0.58, ease: EASE_OUT },
+  },
+};
+
+const scheduleClockVariants = {
+  hidden: { opacity: 0, scale: 0.5, rotate: -25 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    rotate: 0,
+    transition: { type: "spring" as const, stiffness: 340, damping: 24 },
+  },
+};
+
+const rsvpMailVariants = {
+  hidden: { opacity: 0, y: 22, rotateX: 18, rotateZ: -6 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    rotateX: 0,
+    rotateZ: 0,
+    transition: { type: "spring" as const, stiffness: 280, damping: 22 },
+  },
+};
+
+const rsvpBodyVariants = {
+  hidden: { opacity: 0, y: 20, filter: "blur(8px)" },
+  visible: {
+    opacity: 1,
+    y: 0,
+    filter: "blur(0px)",
+    transition: { duration: 0.58, ease: EASE_OUT },
+  },
+};
+
+const galleryCellVariants = {
+  hidden: (i: number) => ({
+    opacity: 0,
+    x: i % 2 === 0 ? -28 : 28,
+    y: 20,
+    rotate: i % 2 === 0 ? -2.5 : 2.5,
+    scale: 0.92,
+  }),
+  visible: {
+    opacity: 1,
+    x: 0,
+    y: 0,
+    rotate: 0,
+    scale: 1,
+    transition: { duration: 0.52, ease: EASE_OUT },
+  },
+};
+
+const galleryHeaderVariants = {
+  hidden: { opacity: 0, scale: 0.92, filter: "blur(6px)" },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    filter: "blur(0px)",
+    transition: { duration: 0.6, ease: EASE_OUT },
+  },
+};
 
 /* ================================================================
    Gallery data
@@ -505,6 +934,8 @@ function PageDots({
 
 export default function Wedding({ guest }: { guest?: GuestEntry }) {
   const [revealed, setRevealed] = useState(false);
+  /** Startet die Home-Animation erst, wenn der Umschlag die Exit-Animation beendet hat (nicht schon beim Tap). */
+  const [homeIntroReady, setHomeIntroReady] = useState(false);
   const [activeSection, setActiveSection] = useState<SectionId>("home");
   const [rsvpModalOpen, setRsvpModalOpen] = useState(false);
   const [musicPlaying, setMusicPlaying] = useState(false);
@@ -588,7 +1019,7 @@ export default function Wedding({ guest }: { guest?: GuestEntry }) {
         preload="auto"
         loop
       />
-      <AnimatePresence>
+      <AnimatePresence onExitComplete={() => setHomeIntroReady(true)}>
         {!revealed && <EnvelopeScreen onOpen={handleEnvelopeOpen} />}
       </AnimatePresence>
 
@@ -598,42 +1029,7 @@ export default function Wedding({ guest }: { guest?: GuestEntry }) {
           ref={(el) => { sectionRefs.current.home = el; }}
           className="snap-section h-[100svh] flex flex-col items-center justify-center bg-cream px-6 pt-6 pb-24 text-center"
         >
-          <AnimatedSectionContent isActive={activeSection === "home"}>
-            <motion.div variants={sectionItemVariants}>
-              <VenueIllustration />
-            </motion.div>
-            <motion.p variants={sectionItemVariants} className="font-sc text-gold/60 text-[10px] tracking-[0.38em] uppercase mt-6">
-              Hochzeitseinladung
-            </motion.p>
-            <motion.div variants={sectionItemVariants}>
-              <Divider className="mt-9" />
-            </motion.div>
-            <motion.h1
-              variants={sectionItemVariants}
-              className="font-display text-ink text-[clamp(2.65rem,9vw,3.35rem)] leading-[1.02] font-light tracking-[-0.02em] not-italic mt-8"
-            >
-              Areso
-            </motion.h1>
-            <motion.p
-              variants={sectionItemVariants}
-              className="font-script text-gold text-[clamp(2.35rem,7.5vw,3rem)] leading-none mt-2.5"
-              aria-hidden="true"
-            >
-              &amp;
-            </motion.p>
-            <motion.h1
-              variants={sectionItemVariants}
-              className="font-display text-ink text-[clamp(2.65rem,9vw,3.35rem)] leading-[1.02] font-light tracking-[-0.02em] not-italic mt-2.5"
-            >
-              Armin
-            </motion.h1>
-            <motion.div variants={sectionItemVariants}>
-              <Divider className="mt-9" />
-            </motion.div>
-            <motion.p variants={sectionItemVariants} className="font-sc text-gray/70 text-[10px] tracking-[0.28em] uppercase mt-8">
-              Friday, September 4th, 2026
-            </motion.p>
-          </AnimatedSectionContent>
+          <HomeSectionContent isActive={activeSection === "home" && homeIntroReady} />
         </section>
 
         {/* ── EINLADUNG (Gästetext) ────────────────────── */}
@@ -641,28 +1037,39 @@ export default function Wedding({ guest }: { guest?: GuestEntry }) {
           ref={(el) => { sectionRefs.current.invite = el; }}
           className="snap-section h-[100svh] flex flex-col items-center justify-center bg-cream px-6 pt-6 pb-24 text-center"
         >
-          <AnimatedSectionContent isActive={activeSection === "invite"}>
-            <motion.div variants={sectionItemVariants}>
+          <AnimatedSectionContent
+            isActive={activeSection === "invite"}
+            containerVariants={inviteContainerVariants}
+          >
+            <motion.div variants={inviteIconVariants} className="flex justify-center">
               <IconHeart className="w-8 h-8 text-gold/50 mx-auto" />
             </motion.div>
-            <motion.p variants={sectionItemVariants} className="font-sc text-gold/60 text-[10px] tracking-[0.36em] uppercase mt-3">
+            <motion.p variants={inviteLineVariants} className="font-sc text-gold/60 text-[10px] tracking-[0.36em] uppercase mt-3">
               Einladung
             </motion.p>
-            <motion.div variants={sectionItemVariants}>
+            <motion.div variants={inviteLineVariants}>
               <Divider className="mt-6" />
             </motion.div>
             <motion.p
-              variants={sectionItemVariants}
+              variants={inviteLineVariants}
               className="font-display text-ink text-[1.15rem] font-light leading-relaxed mt-8 max-w-[min(90vw,340px)] mx-auto"
             >
               {detailsCopy.line1}
             </motion.p>
             <motion.p
-              variants={sectionItemVariants}
+              variants={inviteLineVariants}
               className="font-display text-gray text-[15px] font-light leading-relaxed mt-5 max-w-[min(90vw,340px)] mx-auto"
             >
               {detailsCopy.line2}
             </motion.p>
+            {detailsCopy.line3 && (
+              <motion.p
+                variants={inviteLineVariants}
+                className="font-display text-gray text-[15px] font-light leading-relaxed mt-5 max-w-[min(90vw,340px)] mx-auto"
+              >
+                {detailsCopy.line3}
+              </motion.p>
+            )}
           </AnimatedSectionContent>
         </section>
 
@@ -671,18 +1078,21 @@ export default function Wedding({ guest }: { guest?: GuestEntry }) {
           ref={(el) => { sectionRefs.current.details = el; }}
           className="snap-section h-[100svh] flex flex-col items-center justify-center bg-ink px-6 pt-6 pb-24 text-center"
         >
-          <AnimatedSectionContent isActive={activeSection === "details"}>
-            <motion.div variants={sectionItemVariants}>
+          <AnimatedSectionContent
+            isActive={activeSection === "details"}
+            containerVariants={detailsContainerVariants}
+          >
+            <motion.div variants={detailsPinVariants} className="flex justify-center">
               <IconPin className="w-8 h-8 text-gold/50 mx-auto" />
             </motion.div>
-            <motion.p variants={sectionItemVariants} className="font-sc text-gold/60 text-[10px] tracking-[0.36em] uppercase mt-3">
+            <motion.p variants={inviteLineVariants} className="font-sc text-gold/60 text-[10px] tracking-[0.36em] uppercase mt-3">
               The Details
             </motion.p>
-            <motion.div variants={sectionItemVariants}>
+            <motion.div variants={inviteLineVariants}>
               <Divider className="mt-6" />
             </motion.div>
 
-            <motion.div variants={sectionItemVariants} className="mt-8">
+            <motion.div variants={detailsBlockVariants} custom={0} className="mt-8">
               <p className="font-sc text-gold/50 text-[10px] tracking-[0.35em] uppercase">
                 Location
               </p>
@@ -705,7 +1115,7 @@ export default function Wedding({ guest }: { guest?: GuestEntry }) {
               </a>
             </motion.div>
 
-            <motion.div variants={sectionItemVariants} className="mt-10">
+            <motion.div variants={detailsBlockVariants} custom={1} className="mt-10">
               <p className="font-sc text-gold/50 text-[10px] tracking-[0.35em] uppercase">
                 Additional Info
               </p>
@@ -714,7 +1124,7 @@ export default function Wedding({ guest }: { guest?: GuestEntry }) {
               </p>
             </motion.div>
 
-            <motion.div variants={sectionItemVariants} className="mt-8">
+            <motion.div variants={detailsBlockVariants} custom={2} className="mt-8">
               <p className="font-sc text-gold/50 text-[10px] tracking-[0.35em] uppercase">
                 Contact
               </p>
@@ -734,20 +1144,23 @@ export default function Wedding({ guest }: { guest?: GuestEntry }) {
           ref={(el) => { sectionRefs.current.schedule = el; }}
           className="snap-section h-[100svh] flex flex-col items-center justify-center bg-cream px-6 pt-6 pb-24 text-center"
         >
-          <AnimatedSectionContent isActive={activeSection === "schedule"}>
-            <motion.div variants={sectionItemVariants}>
+          <AnimatedSectionContent
+            isActive={activeSection === "schedule"}
+            containerVariants={scheduleContainerVariants}
+          >
+            <motion.div variants={scheduleClockVariants} className="flex justify-center">
               <IconClock className="w-8 h-8 text-gold/50 mx-auto" />
             </motion.div>
-            <motion.p variants={sectionItemVariants} className="font-sc text-gold/60 text-[10px] tracking-[0.36em] uppercase mt-3">
+            <motion.p variants={inviteLineVariants} className="font-sc text-gold/60 text-[10px] tracking-[0.36em] uppercase mt-3">
               The Schedule
             </motion.p>
-            <motion.h2 variants={sectionItemVariants} className="font-display text-ink text-[1.7rem] italic font-light mt-4">
+            <motion.h2 variants={inviteLineVariants} className="font-display text-ink text-[1.7rem] italic font-light mt-4">
               Order of the Day
             </motion.h2>
-            <motion.div variants={sectionItemVariants}>
+            <motion.div variants={inviteLineVariants}>
               <Divider className="mt-5" />
             </motion.div>
-            <Timeline />
+            <Timeline isActive={activeSection === "schedule"} />
           </AnimatedSectionContent>
         </section>
 
@@ -756,30 +1169,39 @@ export default function Wedding({ guest }: { guest?: GuestEntry }) {
           ref={(el) => { sectionRefs.current.rsvp = el; }}
           className="snap-section h-[100svh] flex flex-col items-center justify-center bg-cream px-6 pt-6 pb-24 text-center"
         >
-          <AnimatedSectionContent isActive={activeSection === "rsvp"}>
-            <motion.div variants={sectionItemVariants}>
-              <IconMail className="w-8 h-8 text-gold/50 mx-auto" />
-            </motion.div>
-            <motion.p variants={sectionItemVariants} className="font-sc text-gold/60 text-[10px] tracking-[0.36em] uppercase mt-3">
+          <AnimatedSectionContent
+            isActive={activeSection === "rsvp"}
+            containerVariants={rsvpContainerVariants}
+          >
+            <div className="[perspective:960px] flex justify-center">
+              <motion.div
+                variants={rsvpMailVariants}
+                style={{ transformStyle: "preserve-3d" }}
+                className="inline-flex"
+              >
+                <IconMail className="w-8 h-8 text-gold/50 mx-auto" />
+              </motion.div>
+            </div>
+            <motion.p variants={inviteLineVariants} className="font-sc text-gold/60 text-[10px] tracking-[0.36em] uppercase mt-3">
               RSVP
             </motion.p>
-            <motion.h2 variants={sectionItemVariants} className="font-display text-ink text-[1.7rem] font-light mt-5 leading-snug">
+            <motion.h2 variants={rsvpHeadlinePrimaryVariants} className="font-display text-ink text-[1.7rem] font-light mt-5 leading-snug">
               We&apos;d love to
             </motion.h2>
-            <motion.h2 variants={sectionItemVariants} className="font-display text-gold text-[1.7rem] italic font-light leading-snug">
+            <motion.h2 variants={rsvpHeadlineAccentVariants} className="font-display text-gold text-[1.7rem] italic font-light leading-snug">
               see you there
             </motion.h2>
-            <motion.div variants={sectionItemVariants}>
+            <motion.div variants={inviteLineVariants}>
               <Divider className="mt-5" />
             </motion.div>
-            <motion.p variants={sectionItemVariants} className="font-display text-gray text-[15px] font-light leading-relaxed mt-6 max-w-[290px]">
+            <motion.p variants={rsvpBodyVariants} className="font-display text-gray text-[15px] font-light leading-relaxed mt-6 max-w-[290px]">
               Wir freuen uns auf euch und können es nicht erwarten diesen
               besonderen Tag mit euch zu verbringen!
             </motion.p>
-            <motion.p variants={sectionItemVariants} className="font-display text-ink/85 text-[15px] font-light leading-relaxed mt-5 max-w-[290px]">
+            <motion.p variants={rsvpBodyVariants} className="font-display text-ink/85 text-[15px] font-light leading-relaxed mt-5 max-w-[290px]">
               {rsvpDeadlineText}
             </motion.p>
-            <motion.div variants={sectionItemVariants} className="w-full flex justify-center mt-2">
+            <motion.div variants={rsvpBodyVariants} className="w-full flex justify-center mt-2">
               <RsvpForm guest={guest} onOpenChange={setRsvpModalOpen} />
             </motion.div>
           </AnimatedSectionContent>
@@ -790,19 +1212,29 @@ export default function Wedding({ guest }: { guest?: GuestEntry }) {
           ref={(el) => { sectionRefs.current.gallery = el; }}
           className="snap-section bg-ink px-5 pt-14 pb-24 text-center"
         >
-          <AnimatedSectionContent isActive={activeSection === "gallery"}>
-            <motion.div variants={sectionItemVariants}>
+          <AnimatedSectionContent
+            isActive={activeSection === "gallery"}
+            containerVariants={galleryContainerVariants}
+          >
+            <motion.div variants={galleryHeaderVariants} className="flex justify-center">
               <IconCamera className="w-8 h-8 text-gold/50 mx-auto" />
             </motion.div>
-            <motion.p variants={sectionItemVariants} className="font-sc text-gold/60 text-[10px] tracking-[0.36em] uppercase mt-3">
+            <motion.p variants={galleryHeaderVariants} className="font-sc text-gold/60 text-[10px] tracking-[0.36em] uppercase mt-3">
               Moments
             </motion.p>
-            <motion.h2 variants={sectionItemVariants} className="font-display text-cream text-[1.7rem] italic font-light mt-4">
+            <motion.h2 variants={galleryHeaderVariants} className="font-display text-cream text-[1.7rem] italic font-light mt-4">
               Our Story So Far
             </motion.h2>
-            <motion.div variants={sectionItemVariants} className="grid grid-cols-2 gap-1.5 mt-7">
+            <motion.div variants={galleryGridVariants} className="grid grid-cols-2 gap-1.5 mt-7">
               {GALLERY_IMAGES.map((src, i) => (
-                <motion.div key={i} variants={sectionItemVariants} className="relative aspect-[4/5] overflow-hidden rounded">
+                <motion.div
+                  key={i}
+                  custom={i}
+                  variants={galleryCellVariants}
+                  whileHover={{ scale: 1.02 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 28 }}
+                  className="relative aspect-[4/5] overflow-hidden rounded"
+                >
                   <Image
                     src={src}
                     alt=""

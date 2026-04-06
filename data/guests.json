@@ -1,16 +1,567 @@
 [
   {
-    "slug": "familie-mueller",
-    "label": "Familie Müller",
-    "names": ["Anna Müller", "Tom Müller", "Lisa Müller", "Jonas Müller", "Emma Müller"],
-    "greeting": "Liebe Familie Müller,",
+    "slug": "behnaz",
+    "side": "areso",
+    "names": [
+      "Behnaz",
+      "Zabi",
+      "Moschda"
+    ],
+    "greeting": "Liebe Gäste,",
     "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen."
   },
   {
-    "slug": "k7x9qm2p",
-    "label": "Freunde Berlin",
-    "names": ["Alex", "Sam", "Jordan", "Morgan", "Casey", "Riley", "Taylor", "Jamie"],
-    "greeting": "Liebe Freunde,",
-    "namesLine": "dieser Link ist nur für eure Gruppe bestimmt."
+    "slug": "veera",
+    "side": "areso",
+    "names": [
+      "Veera",
+      "Aziz"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen."
+  },
+  {
+    "slug": "vareena",
+    "side": "areso",
+    "names": [
+      "Vareena",
+      "Abbas",
+      "Viana"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen."
+  },
+  {
+    "slug": "bashir",
+    "side": "areso",
+    "names": [
+      "Bashir"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, dich bei unserer Feier begrüßen zu dürfen."
+  },
+  {
+    "slug": "nadera",
+    "side": "areso",
+    "names": [
+      "Nadera",
+      "Zamir",
+      "Milad",
+      "Elyas"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen."
+  },
+  {
+    "slug": "sadaf",
+    "side": "areso",
+    "names": [
+      "Sadaf",
+      "Monir",
+      "Alina",
+      "Aaron"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen."
+  },
+  {
+    "slug": "moradessa",
+    "side": "areso",
+    "names": [
+      "Moradessa",
+      "Zubeir",
+      "Kian"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen."
+  },
+  {
+    "slug": "laura",
+    "side": "areso",
+    "names": [
+      "Laura",
+      "Abas",
+      "Emilia"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen."
+  },
+  {
+    "slug": "moschgan",
+    "side": "areso",
+    "names": [
+      "Moschgan",
+      "Noor",
+      "Hamid"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen."
+  },
+  {
+    "slug": "herr-akbari",
+    "side": "areso",
+    "names": [
+      "Herr Akbari",
+      "Frau Akbari"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen."
+  },
+  {
+    "slug": "nawid",
+    "side": "areso",
+    "names": [
+      "Nawid",
+      "Mariam"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen."
+  },
+  {
+    "slug": "hakima",
+    "side": "areso",
+    "names": [
+      "Hakima",
+      "Nassir",
+      "Hemmat",
+      "Sohra"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen."
+  },
+  {
+    "slug": "emin",
+    "side": "areso",
+    "names": [
+      "Emin",
+      "Hayat",
+      "Nilab",
+      "Hassiba"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen."
+  },
+  {
+    "slug": "ariane",
+    "side": "areso",
+    "names": [
+      "Ariane",
+      "Omed"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen."
+  },
+  {
+    "slug": "ivana",
+    "side": "areso",
+    "names": [
+      "Ivana"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, dich bei unserer Feier begrüßen zu dürfen."
+  },
+  {
+    "slug": "alen",
+    "side": "areso",
+    "names": [
+      "Alen"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, dich bei unserer Feier begrüßen zu dürfen."
+  },
+  {
+    "slug": "fatima",
+    "side": "areso",
+    "names": [
+      "Fatima",
+      "Tabesh"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen."
+  },
+  {
+    "slug": "janine",
+    "side": "areso",
+    "names": [
+      "Janine"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, dich bei unserer Feier begrüßen zu dürfen."
+  },
+  {
+    "slug": "mihria",
+    "side": "areso",
+    "names": [
+      "Mihria",
+      "Patrick"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen."
+  },
+  {
+    "slug": "anouar",
+    "side": "areso",
+    "names": [
+      "Anouar",
+      "Begleitung"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen."
+  },
+  {
+    "slug": "jessica",
+    "side": "areso",
+    "names": [
+      "Jessica",
+      "Dennis"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen."
+  },
+  {
+    "slug": "tobias",
+    "side": "areso",
+    "names": [
+      "Tobias",
+      "Lea"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen."
+  },
+  {
+    "slug": "roya",
+    "side": "areso",
+    "names": [
+      "Roya",
+      "Walentin"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen."
+  },
+  {
+    "slug": "mino",
+    "side": "areso",
+    "names": [
+      "Mino",
+      "Nasser",
+      "Leyma",
+      "Liiban",
+      "Faarzien"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen."
+  },
+  {
+    "slug": "neihra",
+    "side": "areso",
+    "names": [
+      "Neihra",
+      "Lamia",
+      "Saiqa"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen."
+  },
+  {
+    "slug": "rehana",
+    "side": "areso",
+    "names": [
+      "Rehana",
+      "Majid"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen."
+  },
+  {
+    "slug": "aqeela",
+    "side": "areso",
+    "names": [
+      "Aqeela",
+      "Gol Ahmad"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen."
+  },
+  {
+    "slug": "sheela",
+    "side": "areso",
+    "names": [
+      "Sheela",
+      "Murtaza"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen.",
+    "inviteNote": "Ohne Kinder."
+  },
+  {
+    "slug": "shahin",
+    "side": "areso",
+    "names": [
+      "Shahin",
+      "Marina"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen.",
+    "inviteNote": "Ohne Kinder."
+  },
+  {
+    "slug": "aziz",
+    "side": "areso",
+    "names": [
+      "Aziz",
+      "Jamila"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen."
+  },
+  {
+    "slug": "abdol",
+    "side": "areso",
+    "names": [
+      "Abdol",
+      "Parween"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen."
+  },
+  {
+    "slug": "ghani",
+    "side": "areso",
+    "names": [
+      "Ghani",
+      "Mitra",
+      "Raheb",
+      "Rangina"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen."
+  },
+  {
+    "slug": "fauzia",
+    "side": "areso",
+    "names": [
+      "Fauzia",
+      "Gholam Sha"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen."
+  },
+  {
+    "slug": "malal",
+    "side": "areso",
+    "names": [
+      "Malal",
+      "Touryalai",
+      "Maryam"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen."
+  },
+  {
+    "slug": "sapida",
+    "side": "areso",
+    "names": [
+      "Sapida",
+      "Siavash"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen."
+  },
+  {
+    "slug": "jamal",
+    "side": "areso",
+    "names": [
+      "Jamal",
+      "Hashem"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen."
+  },
+  {
+    "slug": "neghat",
+    "side": "areso",
+    "names": [
+      "Neghat",
+      "Farzana"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen.",
+    "inviteNote": "Ohne Kinder."
+  },
+  {
+    "slug": "nezhat",
+    "side": "areso",
+    "names": [
+      "Nezhat",
+      "Aylin"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen.",
+    "inviteNote": "Ohne Kinder."
+  },
+  {
+    "slug": "hemmat",
+    "side": "areso",
+    "names": [
+      "Hemmat",
+      "Aylin"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen."
+  },
+  {
+    "slug": "tim",
+    "side": "areso",
+    "names": [
+      "Tim"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, dich bei unserer Feier begrüßen zu dürfen."
+  },
+  {
+    "slug": "shafeqa",
+    "side": "areso",
+    "names": [
+      "Shafeqa",
+      "Ali"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen."
+  },
+  {
+    "slug": "mohammad",
+    "side": "areso",
+    "names": [
+      "Mohammad",
+      "Khanom"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen.",
+    "inviteNote": "Ohne Kinder."
+  },
+  {
+    "slug": "homayoun",
+    "side": "areso",
+    "names": [
+      "Homayoun",
+      "Shahpari"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen.",
+    "inviteNote": "Ohne Kinder."
+  },
+  {
+    "slug": "shoaib",
+    "side": "areso",
+    "names": [
+      "Shoaib",
+      "Fatima"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen."
+  },
+  {
+    "slug": "tina",
+    "side": "armin",
+    "names": [
+      "Tina",
+      "Nima"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen."
+  },
+  {
+    "slug": "mina",
+    "side": "armin",
+    "names": [
+      "Mina",
+      "Erkan",
+      "Herr Aras",
+      "Frau Aras"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen."
+  },
+  {
+    "slug": "franziska",
+    "side": "armin",
+    "names": [
+      "Franziska",
+      "Tim"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen."
+  },
+  {
+    "slug": "pascal",
+    "side": "armin",
+    "names": [
+      "Pascal",
+      "Sandra"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen."
+  },
+  {
+    "slug": "maurice",
+    "side": "armin",
+    "names": [
+      "Maurice"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, dich bei unserer Feier begrüßen zu dürfen."
+  },
+  {
+    "slug": "ali",
+    "side": "armin",
+    "names": [
+      "Ali"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, dich bei unserer Feier begrüßen zu dürfen."
+  },
+  {
+    "slug": "azad",
+    "side": "armin",
+    "names": [
+      "Azad",
+      "Begleitung"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen."
+  },
+  {
+    "slug": "oktaj",
+    "side": "armin",
+    "names": [
+      "Oktaj"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, dich bei unserer Feier begrüßen zu dürfen."
+  },
+  {
+    "slug": "maryjahn",
+    "side": "armin",
+    "names": [
+      "Maryjahn",
+      "Faramarz",
+      "Edward",
+      "Antoine",
+      "Fiance"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen."
+  },
+  {
+    "slug": "azar",
+    "side": "armin",
+    "names": [
+      "Azar",
+      "Tagi",
+      "Adrian",
+      "Arman"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen."
   }
 ]
