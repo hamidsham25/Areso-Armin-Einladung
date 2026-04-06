@@ -3,15 +3,56 @@
 import { useState, useEffect, useRef, type ReactNode } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import Image from "next/image";
+import { RsvpForm } from "@/app/components/RsvpForm";
+import {
+  type GuestEntry,
+  buildDetailsInvitationCopy,
+  rsvpDeadlineReminder,
+} from "@/lib/guests";
 
 /* ================================================================
    Types
    ================================================================ */
 
-const SECTIONS = ["home", "details", "schedule", "rsvp", "gallery"] as const;
+const SECTIONS = ["home", "invite", "details", "schedule", "rsvp", "gallery"] as const;
 type SectionId = (typeof SECTIONS)[number];
 const DARK_SECTIONS: SectionId[] = ["details", "gallery"];
 const EASE_OUT = [0.22, 1, 0.36, 1] as const;
+
+/** Touch-first (Handy/Tablet), kein Desktop mit präzisem Hover — für Vollbild nur dort sinnvoll. */
+function isMobileFullscreenContext(): boolean {
+  if (typeof window === "undefined") return false;
+  return (
+    window.matchMedia("(pointer: coarse)").matches &&
+    window.matchMedia("(hover: none)").matches
+  );
+}
+
+/** Muss im selben synchronen Tap-Handler laufen (User Activation). Fehler still ignorieren. */
+function tryEnterFullscreenFromUserGesture(): void {
+  if (typeof document === "undefined") return;
+  const el = document.documentElement;
+  type FullscreenElement = HTMLElement & {
+    webkitRequestFullscreen?: () => Promise<void> | void;
+    mozRequestFullScreen?: () => Promise<void> | void;
+    msRequestFullscreen?: () => Promise<void> | void;
+  };
+  const root = el as FullscreenElement;
+  const request =
+    el.requestFullscreen?.bind(el) ??
+    root.webkitRequestFullscreen?.bind(el) ??
+    root.mozRequestFullScreen?.bind(el) ??
+    root.msRequestFullscreen?.bind(el);
+  if (!request) return;
+  try {
+    const result = request();
+    if (result !== undefined && typeof (result as Promise<void>).catch === "function") {
+      (result as Promise<void>).catch(() => {});
+    }
+  } catch {
+    /* nicht unterstützt oder keine Berechtigung */
+  }
+}
 
 /* ================================================================
    SVG Icons
@@ -85,6 +126,14 @@ function IconPhone(p: React.SVGProps<SVGSVGElement>) {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" {...p}>
       <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.79 19.79 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z" />
+    </svg>
+  );
+}
+
+function IconHeart(p: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" {...p}>
+      <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
     </svg>
   );
 }
@@ -221,36 +270,123 @@ const GALLERY_IMAGES = [
    Envelope Screen (placeholder for future video)
    ================================================================ */
 
+const ENVELOPE_FLAP_CLOSED = "M4 60 L130 116 L256 60 Z";
+const ENVELOPE_FLAP_OPEN = "M4 60 L130 4 L256 60 Z";
+const FLAP_SEAL_Y = { closed: 106, open: 18 } as const;
+
 function EnvelopeScreen({ onOpen }: { onOpen: () => void }) {
+  const [flapOpen, setFlapOpen] = useState(false);
+  const didReveal = useRef(false);
+
+  const handleOpen = () => {
+    if (flapOpen) return;
+    if (isMobileFullscreenContext()) {
+      tryEnterFullscreenFromUserGesture();
+    }
+    setFlapOpen(true);
+  };
+
+  const sealY = flapOpen ? FLAP_SEAL_Y.open : FLAP_SEAL_Y.closed;
+
   return (
     <motion.div
       className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-cream select-none cursor-pointer"
-      onClick={onOpen}
+      onClick={handleOpen}
       exit={{ y: "-100vh", opacity: 0 }}
       transition={{ duration: 0.9, ease: [0.76, 0, 0.24, 1] }}
     >
-      <p className="font-display text-gold text-[4.2rem] italic font-light tracking-wide mb-10">
-        A{" "}
-        <span className="text-5xl align-middle font-normal not-italic">&amp;</span>{" "}
-        A
-      </p>
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.85, ease: EASE_OUT }}
+        className="mb-10 flex flex-col items-center"
+      >
+        <p
+          className="flex items-baseline justify-center gap-1.5 sm:gap-2.5 leading-none [text-shadow:0_1px_0_rgba(255,255,255,0.45)]"
+          aria-label="Monogramm A und A"
+        >
+          <span className="font-display text-gold text-[clamp(3.5rem,12vw,5rem)] font-light uppercase tracking-[0.14em]">
+            A
+          </span>
+          <span className="font-script text-gold text-[clamp(2.35rem,7.5vw,3.35rem)] translate-y-[0.06em] pb-0.5">
+            &amp;
+          </span>
+          <span className="font-display text-gold text-[clamp(3.5rem,12vw,5rem)] font-light uppercase tracking-[0.14em]">
+            A
+          </span>
+        </p>
+        <div className="mt-5 h-px w-16 bg-gradient-to-r from-transparent via-gold/45 to-transparent" aria-hidden />
+      </motion.div>
 
       <svg viewBox="0 0 260 170" className="w-72 sm:w-80" aria-hidden="true">
         <rect x="4" y="60" width="252" height="106" rx="4" fill="#F0EBE4" stroke="#C9A96E" strokeWidth="0.8" />
-        <path d="M4 60 L130 130 L256 60" fill="none" stroke="#C9A96E" strokeWidth="0.5" opacity="0.35" />
-        <path d="M4 60 L130 4 L256 60 Z" fill="#E8E2D8" stroke="#C9A96E" strokeWidth="0.8" />
-        <circle cx="130" cy="60" r="18" fill="#8B2020" />
-        <circle cx="130" cy="60" r="13" fill="none" stroke="#D4A574" strokeWidth="0.6" />
-        <text x="130" y="65" textAnchor="middle" fill="#D4A574" fontSize="14" fontFamily="serif" fontStyle="italic">&amp;</text>
+        {/* Innenfalz (V) — erst sichtbar wenn die Klappe offen ist */}
+        <motion.path
+          d="M4 60 L130 130 L256 60"
+          fill="none"
+          stroke="#C9A96E"
+          strokeWidth="0.5"
+          initial={false}
+          animate={{ opacity: flapOpen ? 0.35 : 0 }}
+          transition={{ duration: 0.55, ease: EASE_OUT }}
+        />
+        {/* Zu: Klappe liegt auf dem Umschlag (Spitze unten im Rechteck). Offen: Klappe nach oben — per Pfad-Morph, kein CSS-rotate auf <g> (verrutscht im SVG). */}
+        <motion.path
+          fill="#E8E2D8"
+          stroke="#C9A96E"
+          strokeWidth="0.8"
+          initial={false}
+          animate={{ d: flapOpen ? ENVELOPE_FLAP_OPEN : ENVELOPE_FLAP_CLOSED }}
+          transition={{ duration: 0.55, ease: EASE_OUT }}
+          onAnimationComplete={() => {
+            if (flapOpen && !didReveal.current) {
+              didReveal.current = true;
+              onOpen();
+            }
+          }}
+        />
+        <motion.circle
+          cx="130"
+          r="18"
+          fill="#8B2020"
+          initial={false}
+          animate={{ cy: sealY }}
+          transition={{ duration: 0.55, ease: EASE_OUT }}
+        />
+        <motion.circle
+          cx="130"
+          r="13"
+          fill="none"
+          stroke="#D4A574"
+          strokeWidth="0.6"
+          initial={false}
+          animate={{ cy: sealY }}
+          transition={{ duration: 0.55, ease: EASE_OUT }}
+        />
+        <motion.text
+          x="130"
+          textAnchor="middle"
+          fill="#D4A574"
+          fontSize="14"
+          fontFamily="serif"
+          fontStyle="italic"
+          initial={false}
+          animate={{ y: sealY + 5 }}
+          transition={{ duration: 0.55, ease: EASE_OUT }}
+        >
+          &amp;
+        </motion.text>
         {Array.from({ length: 14 }).map((_, i) => {
           const a = ((i * 360) / 14) * (Math.PI / 180);
           return (
-            <circle
+            <motion.circle
               key={i}
               cx={130 + 19 * Math.cos(a)}
-              cy={60 + 19 * Math.sin(a)}
               r="4.5"
               fill="#8B2020"
+              initial={false}
+              animate={{ cy: sealY + 19 * Math.sin(a) }}
+              transition={{ duration: 0.55, ease: EASE_OUT }}
             />
           );
         })}
@@ -269,6 +405,7 @@ function EnvelopeScreen({ onOpen }: { onOpen: () => void }) {
 
 const NAV_ITEMS: { id: SectionId; icon: React.FC<React.SVGProps<SVGSVGElement>> }[] = [
   { id: "home", icon: IconHome },
+  { id: "invite", icon: IconHeart },
   { id: "details", icon: IconPin },
   { id: "schedule", icon: IconCalendar },
   { id: "rsvp", icon: IconMail },
@@ -312,7 +449,19 @@ function BottomNav({
               ? "text-cream/35"
               : "text-ink/30"
           }`}
-          aria-label={id}
+          aria-label={
+            id === "invite"
+              ? "Einladung"
+              : id === "details"
+                ? "Details"
+                : id === "schedule"
+                  ? "Ablauf"
+                  : id === "rsvp"
+                    ? "RSVP"
+                    : id === "gallery"
+                      ? "Galerie"
+                      : "Start"
+          }
         >
           <Icon className="w-4 h-4" />
           {active === id && (
@@ -390,7 +539,7 @@ function PageDots({
    Main Wedding component
    ================================================================ */
 
-export default function Wedding() {
+export default function Wedding({ guest }: { guest?: GuestEntry }) {
   const [revealed, setRevealed] = useState(false);
   const [activeSection, setActiveSection] = useState<SectionId>("home");
   const [musicPlaying, setMusicPlaying] = useState(false);
@@ -406,21 +555,27 @@ export default function Wedding() {
     if (!revealed) return;
     const container = scrollRef.current;
     if (!container) return;
+    const root = container;
 
-    const observers: IntersectionObserver[] = [];
-    SECTIONS.forEach((id) => {
-      const el = sectionRefs.current[id];
-      if (!el) return;
-      const io = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) setActiveSection(id);
-        },
-        { root: container, threshold: 0.55 }
-      );
-      io.observe(el);
-      observers.push(io);
-    });
-    return () => observers.forEach((io) => io.disconnect());
+    /** Aktive Section = letzte, deren Oberkante noch über der Viewport-Mitte liegt. Funktioniert auch bei sehr hohen Sections (Galerie auf Desktop). */
+    function updateActiveFromScroll() {
+      const mid = root.scrollTop + root.clientHeight / 2;
+      let active: SectionId = SECTIONS[0];
+      for (const id of SECTIONS) {
+        const el = sectionRefs.current[id];
+        if (!el) continue;
+        if (el.offsetTop <= mid) active = id;
+      }
+      setActiveSection(active);
+    }
+
+    updateActiveFromScroll();
+    root.addEventListener("scroll", updateActiveFromScroll, { passive: true });
+    window.addEventListener("resize", updateActiveFromScroll);
+    return () => {
+      root.removeEventListener("scroll", updateActiveFromScroll);
+      window.removeEventListener("resize", updateActiveFromScroll);
+    };
   }, [revealed]);
 
   const scrollTo = (id: SectionId) => {
@@ -457,6 +612,8 @@ export default function Wedding() {
   };
 
   const isDark = DARK_SECTIONS.includes(activeSection);
+  const detailsCopy = buildDetailsInvitationCopy(guest);
+  const rsvpDeadlineText = rsvpDeadlineReminder(guest);
 
   return (
     <>
@@ -486,11 +643,23 @@ export default function Wedding() {
             <motion.div variants={sectionItemVariants}>
               <Divider className="mt-9" />
             </motion.div>
-            <motion.h1 variants={sectionItemVariants} className="font-display text-ink text-[3rem] leading-none italic font-light mt-8">
+            <motion.h1
+              variants={sectionItemVariants}
+              className="font-display text-ink text-[clamp(2.65rem,9vw,3.35rem)] leading-[1.02] font-light tracking-[-0.02em] not-italic mt-8"
+            >
               Areso
             </motion.h1>
-            <motion.p variants={sectionItemVariants} className="font-display text-gold text-xl italic mt-1.5">&amp;</motion.p>
-            <motion.h1 variants={sectionItemVariants} className="font-display text-ink text-[3rem] leading-none italic font-light mt-1.5">
+            <motion.p
+              variants={sectionItemVariants}
+              className="font-script text-gold text-[clamp(2.35rem,7.5vw,3rem)] leading-none mt-2.5"
+              aria-hidden="true"
+            >
+              &amp;
+            </motion.p>
+            <motion.h1
+              variants={sectionItemVariants}
+              className="font-display text-ink text-[clamp(2.65rem,9vw,3.35rem)] leading-[1.02] font-light tracking-[-0.02em] not-italic mt-2.5"
+            >
               Armin
             </motion.h1>
             <motion.div variants={sectionItemVariants}>
@@ -498,6 +667,36 @@ export default function Wedding() {
             </motion.div>
             <motion.p variants={sectionItemVariants} className="font-sc text-gray/70 text-[10px] tracking-[0.28em] uppercase mt-8">
               Friday, September 4th, 2026
+            </motion.p>
+          </AnimatedSectionContent>
+        </section>
+
+        {/* ── EINLADUNG (Gästetext) ────────────────────── */}
+        <section
+          ref={(el) => { sectionRefs.current.invite = el; }}
+          className="snap-section h-[100svh] flex flex-col items-center justify-center bg-cream px-6 pt-6 pb-24 text-center"
+        >
+          <AnimatedSectionContent isActive={activeSection === "invite"}>
+            <motion.div variants={sectionItemVariants}>
+              <IconHeart className="w-8 h-8 text-gold/50 mx-auto" />
+            </motion.div>
+            <motion.p variants={sectionItemVariants} className="font-sc text-gold/60 text-[10px] tracking-[0.36em] uppercase mt-3">
+              Einladung
+            </motion.p>
+            <motion.div variants={sectionItemVariants}>
+              <Divider className="mt-6" />
+            </motion.div>
+            <motion.p
+              variants={sectionItemVariants}
+              className="font-display text-ink text-[1.15rem] font-light leading-relaxed mt-8 max-w-[min(90vw,340px)] mx-auto"
+            >
+              {detailsCopy.line1}
+            </motion.p>
+            <motion.p
+              variants={sectionItemVariants}
+              className="font-display text-gray text-[15px] font-light leading-relaxed mt-5 max-w-[min(90vw,340px)] mx-auto"
+            >
+              {detailsCopy.line2}
             </motion.p>
           </AnimatedSectionContent>
         </section>
@@ -529,7 +728,7 @@ export default function Wedding() {
                 Gustedter Str. 201, 38229 Salzgitter
               </p>
               <p className="font-display text-gold/70 text-[15px] italic mt-2">
-                Arrive from 16:30
+                Arrive from 16:00
               </p>
               <a
                 href="https://www.google.com/maps/place/Eventlocation+Haverlahwiese/@52.0959001,10.3276364,1135m/data=!3m1!1e3!4m15!1m8!3m7!1s0x47a5500dc0cd43c1:0xc6f9ce343e0dbc37!2sGustedter+Str.+201,+38229+Salzgitter!3b1!8m2!3d52.0957711!4d10.3318371!16s%2Fg%2F11bw3xlpzn!3m5!1s0x47a5500c45b1c3ad:0xe38dd5915f2aa856!8m2!3d52.0961856!4d10.3350609!16s%2Fg%2F11cs40prky?entry=ttu&g_ep=EgoyMDI2MDMyOS4wIKXMDSoASAFQAw%3D%3D"
@@ -612,16 +811,11 @@ export default function Wedding() {
               Wir freuen uns auf euch und können es nicht erwarten diesen
               besonderen Tag mit euch zu verbringen!
             </motion.p>
-            <motion.div variants={sectionItemVariants} className="flex flex-col gap-3 w-full max-w-[290px] mt-8">
-              <button className="w-full py-3 border border-ink/12 font-sc text-ink text-[10px] tracking-[0.23em] uppercase transition-colors duration-200 hover:bg-gold hover:text-white hover:border-gold active:bg-gold active:text-white active:border-gold">
-                Joyfully Accept
-              </button>
-              <button className="w-full py-3 border border-ink/12 font-sc text-ink text-[10px] tracking-[0.23em] uppercase transition-colors duration-200 hover:bg-gold hover:text-white hover:border-gold active:bg-gold active:text-white active:border-gold">
-                Regretfully Decline
-              </button>
-              <button className="w-full py-3 border border-ink/12 font-sc text-ink text-[10px] tracking-[0.23em] uppercase transition-colors duration-200 hover:bg-gold hover:text-white hover:border-gold active:bg-gold active:text-white active:border-gold">
-                Not Sure Yet
-              </button>
+            <motion.p variants={sectionItemVariants} className="font-display text-ink/85 text-[15px] font-light leading-relaxed mt-5 max-w-[290px]">
+              {rsvpDeadlineText}
+            </motion.p>
+            <motion.div variants={sectionItemVariants} className="w-full flex justify-center mt-2">
+              <RsvpForm guest={guest} />
             </motion.div>
           </AnimatedSectionContent>
         </section>

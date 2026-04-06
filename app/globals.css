@@ -10,6 +10,13 @@
   --color-white: #FFFFFF;
   --font-display: var(--font-cormorant);
   --font-sc: var(--font-cormorant-sc);
+  --font-script: var(--font-great-vibes);
+}
+
+@layer utilities {
+  .font-script {
+    font-family: var(--font-great-vibes), cursive;
+  }
 }
 
 /* ── Base ─────────────────────────────────────────────── */

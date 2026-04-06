@@ -1,0 +1,16 @@
+[
+  {
+    "slug": "familie-mueller",
+    "label": "Familie Müller",
+    "names": ["Anna Müller", "Tom Müller", "Lisa Müller", "Jonas Müller", "Emma Müller"],
+    "greeting": "Liebe Familie Müller,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen."
+  },
+  {
+    "slug": "k7x9qm2p",
+    "label": "Freunde Berlin",
+    "names": ["Alex", "Sam", "Jordan", "Morgan", "Casey", "Riley", "Taylor", "Jamie"],
+    "greeting": "Liebe Freunde,",
+    "namesLine": "dieser Link ist nur für eure Gruppe bestimmt."
+  }
+]
