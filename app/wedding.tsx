@@ -691,12 +691,12 @@ function EnvelopeScreen({ onOpen }: { onOpen: () => void }) {
       exit={{ y: "-100vh", opacity: 0 }}
       transition={{ duration: 0.9, ease: [0.76, 0, 0.24, 1] }}
     >
-      {/* Monogramm – absolut positioniert, oberhalb der Mitte */}
+      {/* Monogramm – absolut, responsive via svh/svw */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.85, ease: EASE_OUT }}
-        className="pointer-events-none absolute left-1/2 top-[12%] -translate-x-1/2"
+        className="pointer-events-none absolute inset-x-0 top-[6svh] flex justify-center sm:top-[8svh]"
       >
         <Image
           src="/images/monogram2.png"
@@ -705,20 +705,20 @@ function EnvelopeScreen({ onOpen }: { onOpen: () => void }) {
           height={720}
           priority
           aria-hidden
-          className="h-[min(72vmin,48rem)] w-auto max-w-[min(96vw,50rem)] object-contain object-center [filter:drop-shadow(0_1px_0_rgba(255,255,255,0.35))]"
+          className="h-[38svh] w-auto max-w-[88vw] object-contain object-center sm:h-[42svh] sm:max-w-[min(96vw,50rem)] [filter:drop-shadow(0_1px_0_rgba(255,255,255,0.35))]"
         />
       </motion.div>
 
-      {/* Umschlag + „Tap to open" – absolut zentriert, minimal unter Mitte */}
+      {/* Umschlag + „Tap to open" – absolut, responsive via svh */}
       <motion.div
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.85, ease: EASE_OUT }}
-        className="absolute left-1/2 top-[53%] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center"
+        className="absolute inset-x-0 top-[50svh] flex -translate-y-[42%] flex-col items-center sm:-translate-y-1/2 sm:top-[53svh]"
       >
             <svg
               viewBox="0 0 260 170"
-              className="w-72 shrink-0 drop-shadow-md sm:w-80"
+              className="w-[72vw] max-w-80 shrink-0 drop-shadow-md"
               aria-hidden="true"
             >
         <rect x="4" y="60" width="252" height="106" rx="4" fill="#F0EBE4" stroke="#C9A96E" strokeWidth="0.8" />
@@ -781,7 +781,7 @@ function EnvelopeScreen({ onOpen }: { onOpen: () => void }) {
         })}
       </svg>
 
-        <p className="mt-10 font-sc text-gray text-[12px] tracking-[0.35em] uppercase animate-pulse-soft">
+        <p className="mt-[4svh] font-sc text-gray text-[12px] tracking-[0.35em] uppercase animate-pulse-soft">
           Tap to open
         </p>
       </motion.div>
