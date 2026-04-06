@@ -656,13 +656,11 @@ const galleryHeaderVariants = {
    ================================================================ */
 
 const GALLERY_IMAGES = [
-  "https://images.unsplash.com/photo-1529634597503-139d3726fed5?w=400&q=80",
-  "https://images.unsplash.com/photo-1519741497674-611481863552?w=400&q=80",
-  "https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=400&q=80",
-  "https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=400&q=80",
-  "https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=400&q=80",
-  "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=400&q=80",
-];
+  "/images/1.JPG",
+  "/images/2.JPG",
+  "/images/3.JPG",
+  "/images/4.JPG",
+] as const;
 
 /* ================================================================
    Envelope Screen (placeholder for future video)
@@ -693,30 +691,36 @@ function EnvelopeScreen({ onOpen }: { onOpen: () => void }) {
       exit={{ y: "-100vh", opacity: 0 }}
       transition={{ duration: 0.9, ease: [0.76, 0, 0.24, 1] }}
     >
+      {/* Monogramm – absolut positioniert, oberhalb der Mitte */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.85, ease: EASE_OUT }}
+        className="pointer-events-none absolute left-1/2 top-[12%] -translate-x-1/2"
+      >
+        <Image
+          src="/images/monogram2.png"
+          alt=""
+          width={1200}
+          height={720}
+          priority
+          aria-hidden
+          className="h-[min(72vmin,48rem)] w-auto max-w-[min(96vw,50rem)] object-contain object-center [filter:drop-shadow(0_1px_0_rgba(255,255,255,0.35))]"
+        />
+      </motion.div>
+
+      {/* Umschlag + „Tap to open" – absolut zentriert, minimal unter Mitte */}
       <motion.div
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.85, ease: EASE_OUT }}
-        className="mb-10 flex flex-col items-center"
+        className="absolute left-1/2 top-[53%] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center"
       >
-        <p
-          className="flex items-baseline justify-center gap-1.5 sm:gap-2.5 leading-none [text-shadow:0_1px_0_rgba(255,255,255,0.45)]"
-          aria-label="Monogramm A und A"
-        >
-          <span className="font-display text-gold text-[clamp(3.5rem,12vw,5rem)] font-light uppercase tracking-[0.14em]">
-            A
-          </span>
-          <span className="font-script text-gold text-[clamp(2.35rem,7.5vw,3.35rem)] translate-y-[0.06em] pb-0.5">
-            &amp;
-          </span>
-          <span className="font-display text-gold text-[clamp(3.5rem,12vw,5rem)] font-light uppercase tracking-[0.14em]">
-            A
-          </span>
-        </p>
-        <div className="mt-5 h-px w-16 bg-gradient-to-r from-transparent via-gold/45 to-transparent" aria-hidden />
-      </motion.div>
-
-      <svg viewBox="0 0 260 170" className="w-72 sm:w-80" aria-hidden="true">
+            <svg
+              viewBox="0 0 260 170"
+              className="w-72 shrink-0 drop-shadow-md sm:w-80"
+              aria-hidden="true"
+            >
         <rect x="4" y="60" width="252" height="106" rx="4" fill="#F0EBE4" stroke="#C9A96E" strokeWidth="0.8" />
         {/* Innenfalz (V) — erst sichtbar wenn die Klappe offen ist */}
         <motion.path
@@ -777,9 +781,10 @@ function EnvelopeScreen({ onOpen }: { onOpen: () => void }) {
         })}
       </svg>
 
-      <p className="mt-10 font-sc text-gray text-[12px] tracking-[0.35em] uppercase animate-pulse-soft">
-        Tap to open
-      </p>
+        <p className="mt-10 font-sc text-gray text-[12px] tracking-[0.35em] uppercase animate-pulse-soft">
+          Tap to open
+        </p>
+      </motion.div>
     </motion.div>
   );
 }
@@ -1225,21 +1230,24 @@ export default function Wedding({ guest }: { guest?: GuestEntry }) {
             <motion.h2 variants={galleryHeaderVariants} className="font-display text-cream text-[1.7rem] italic font-light mt-4">
               Our Story So Far
             </motion.h2>
-            <motion.div variants={galleryGridVariants} className="grid grid-cols-2 gap-1.5 mt-7">
+            <motion.div
+              variants={galleryGridVariants}
+              className="grid grid-cols-2 gap-2 sm:gap-3 max-w-md mx-auto mt-7 w-full"
+            >
               {GALLERY_IMAGES.map((src, i) => (
                 <motion.div
-                  key={i}
+                  key={src}
                   custom={i}
                   variants={galleryCellVariants}
                   whileHover={{ scale: 1.02 }}
                   transition={{ type: "spring", stiffness: 400, damping: 28 }}
-                  className="relative aspect-[4/5] overflow-hidden rounded"
+                  className="relative aspect-[4/5] overflow-hidden rounded-sm sm:rounded"
                 >
                   <Image
                     src={src}
                     alt=""
                     fill
-                    sizes="50vw"
+                    sizes="(max-width: 640px) 42vw, 200px"
                     className="object-cover"
                   />
                 </motion.div>
