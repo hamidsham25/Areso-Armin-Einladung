@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import emailjs from "@emailjs/browser";
 import {
   formatGuestNamesForEmail,
@@ -62,11 +63,24 @@ const sectionBtnClass =
 
 type Props = {
   guest?: GuestEntry;
+  /** RSVP-Dialog offen — für Overlay, Nav/Dots im Parent deaktivieren */
+  onOpenChange?: (open: boolean) => void;
 };
 
-export function RsvpForm({ guest }: Props) {
+export function RsvpForm({ guest, onOpenChange }: Props) {
   const [open, setOpen] = useState(false);
   const [response, setResponse] = useState<ResponseKind | null>(null);
+
+  function handleCloseModal() {
+    setOpen(false);
+    onOpenChange?.(false);
+  }
+
+  function pickChoice(kind: ResponseKind) {
+    setResponse(kind);
+    setOpen(true);
+    onOpenChange?.(true);
+  }
 
   useEffect(() => {
     if (!open) return;
@@ -80,20 +94,11 @@ export function RsvpForm({ guest }: Props) {
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
+      if (e.key === "Escape") handleCloseModal();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [open]);
-
-  function pickChoice(kind: ResponseKind) {
-    setResponse(kind);
-    setOpen(true);
-  }
-
-  function handleCloseModal() {
-    setOpen(false);
-  }
 
   return (
     <>
@@ -121,23 +126,26 @@ export function RsvpForm({ guest }: Props) {
         </button>
       </div>
 
-      {open && response && (
-        <div
-          className="fixed inset-0 z-[100] flex items-end justify-center sm:items-center p-0 sm:p-6"
-          role="presentation"
-        >
-          <button
-            type="button"
-            aria-label="Schließen"
-            className="absolute inset-0 bg-ink/45 backdrop-blur-[2px]"
-            onClick={handleCloseModal}
-          />
+      {open &&
+        response &&
+        typeof document !== "undefined" &&
+        createPortal(
           <div
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="rsvp-dialog-title"
-            className="relative z-[101] w-full max-w-[min(100vw,400px)] max-h-[min(92svh,720px)] overflow-hidden rounded-t-2xl sm:rounded-2xl bg-cream border border-ink/[0.08] shadow-2xl shadow-black/20 flex flex-col"
+            className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-6"
+            role="presentation"
           >
+            <button
+              type="button"
+              aria-label="Schließen"
+              className="absolute inset-0 bg-ink/25 backdrop-blur-[3px]"
+              onClick={handleCloseModal}
+            />
+            <div
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="rsvp-dialog-title"
+              className="relative z-10 w-full max-w-[min(100vw,400px)] max-h-[min(92svh,720px)] overflow-hidden rounded-2xl bg-cream border border-ink/[0.08] shadow-2xl shadow-black/25 flex flex-col"
+            >
             <div className="flex items-center justify-between gap-3 px-5 pt-4 pb-3 border-b border-ink/[0.06] shrink-0">
               <h2
                 id="rsvp-dialog-title"
@@ -162,9 +170,10 @@ export function RsvpForm({ guest }: Props) {
                 onClose={handleCloseModal}
               />
             </div>
-          </div>
-        </div>
-      )}
+            </div>
+          </div>,
+          document.body
+        )}
     </>
   );
 }

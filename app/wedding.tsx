@@ -9,6 +9,10 @@ import {
   buildDetailsInvitationCopy,
   rsvpDeadlineReminder,
 } from "@/lib/guests";
+import {
+  isMobileFullscreenContext,
+  tryEnterFullscreenFromUserGesture,
+} from "@/lib/fullscreen";
 
 /* ================================================================
    Types
@@ -18,41 +22,6 @@ const SECTIONS = ["home", "invite", "details", "schedule", "rsvp", "gallery"] as
 type SectionId = (typeof SECTIONS)[number];
 const DARK_SECTIONS: SectionId[] = ["details", "gallery"];
 const EASE_OUT = [0.22, 1, 0.36, 1] as const;
-
-/** Touch-first (Handy/Tablet), kein Desktop mit präzisem Hover — für Vollbild nur dort sinnvoll. */
-function isMobileFullscreenContext(): boolean {
-  if (typeof window === "undefined") return false;
-  return (
-    window.matchMedia("(pointer: coarse)").matches &&
-    window.matchMedia("(hover: none)").matches
-  );
-}
-
-/** Muss im selben synchronen Tap-Handler laufen (User Activation). Fehler still ignorieren. */
-function tryEnterFullscreenFromUserGesture(): void {
-  if (typeof document === "undefined") return;
-  const el = document.documentElement;
-  type FullscreenElement = HTMLElement & {
-    webkitRequestFullscreen?: () => Promise<void> | void;
-    mozRequestFullScreen?: () => Promise<void> | void;
-    msRequestFullscreen?: () => Promise<void> | void;
-  };
-  const root = el as FullscreenElement;
-  const request =
-    el.requestFullscreen?.bind(el) ??
-    root.webkitRequestFullscreen?.bind(el) ??
-    root.mozRequestFullScreen?.bind(el) ??
-    root.msRequestFullscreen?.bind(el);
-  if (!request) return;
-  try {
-    const result = request();
-    if (result !== undefined && typeof (result as Promise<void>).catch === "function") {
-      (result as Promise<void>).catch(() => {});
-    }
-  } catch {
-    /* nicht unterstützt oder keine Berechtigung */
-  }
-}
 
 /* ================================================================
    SVG Icons
@@ -363,19 +332,6 @@ function EnvelopeScreen({ onOpen }: { onOpen: () => void }) {
           animate={{ cy: sealY }}
           transition={{ duration: 0.55, ease: EASE_OUT }}
         />
-        <motion.text
-          x="130"
-          textAnchor="middle"
-          fill="#D4A574"
-          fontSize="14"
-          fontFamily="serif"
-          fontStyle="italic"
-          initial={false}
-          animate={{ y: sealY + 5 }}
-          transition={{ duration: 0.55, ease: EASE_OUT }}
-        >
-          &amp;
-        </motion.text>
         {Array.from({ length: 14 }).map((_, i) => {
           const a = ((i * 360) / 14) * (Math.PI / 180);
           return (
@@ -418,23 +374,26 @@ function BottomNav({
   musicPlaying,
   onToggleMusic,
   isDark,
+  chromeBlocked,
 }: {
   active: SectionId;
   onNavigate: (id: SectionId) => void;
   musicPlaying: boolean;
   onToggleMusic: () => void;
   isDark: boolean;
+  chromeBlocked?: boolean;
 }) {
   return (
     <motion.nav
       initial={{ y: 80, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ delay: 0.4, duration: 0.6, ease: "easeOut" }}
+      aria-hidden={chromeBlocked}
       className={`fixed bottom-3.5 left-1/2 -translate-x-1/2 z-40 flex items-center gap-0.5 backdrop-blur-md rounded-full px-2.5 py-1.5 shadow-lg border transition-colors duration-300 ${
         isDark
           ? "bg-black/25 border-white/12 shadow-black/25"
           : "bg-white/90 border-ink/[0.06] shadow-black/8"
-      }`}
+      } ${chromeBlocked ? "pointer-events-none" : ""}`}
     >
       {NAV_ITEMS.map(({ id, icon: Icon }) => (
         <button
@@ -505,17 +464,22 @@ function PageDots({
   active,
   onNavigate,
   isDark,
+  chromeBlocked,
 }: {
   active: SectionId;
   onNavigate: (id: SectionId) => void;
   isDark: boolean;
+  chromeBlocked?: boolean;
 }) {
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ delay: 0.6 }}
-      className="fixed right-3 top-1/2 -translate-y-1/2 z-40 flex flex-col gap-2"
+      aria-hidden={chromeBlocked}
+      className={`fixed right-3 top-1/2 -translate-y-1/2 z-40 flex flex-col gap-2 ${
+        chromeBlocked ? "pointer-events-none" : ""
+      }`}
     >
       {SECTIONS.map((id) => (
         <button
@@ -542,6 +506,7 @@ function PageDots({
 export default function Wedding({ guest }: { guest?: GuestEntry }) {
   const [revealed, setRevealed] = useState(false);
   const [activeSection, setActiveSection] = useState<SectionId>("home");
+  const [rsvpModalOpen, setRsvpModalOpen] = useState(false);
   const [musicPlaying, setMusicPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -815,7 +780,7 @@ export default function Wedding({ guest }: { guest?: GuestEntry }) {
               {rsvpDeadlineText}
             </motion.p>
             <motion.div variants={sectionItemVariants} className="w-full flex justify-center mt-2">
-              <RsvpForm guest={guest} />
+              <RsvpForm guest={guest} onOpenChange={setRsvpModalOpen} />
             </motion.div>
           </AnimatedSectionContent>
         </section>
@@ -861,11 +826,13 @@ export default function Wedding({ guest }: { guest?: GuestEntry }) {
             musicPlaying={musicPlaying}
             onToggleMusic={handleToggleMusic}
             isDark={isDark}
+            chromeBlocked={rsvpModalOpen}
           />
           <PageDots
             active={activeSection}
             onNavigate={scrollTo}
             isDark={isDark}
+            chromeBlocked={rsvpModalOpen}
           />
         </>
       )}
