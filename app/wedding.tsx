@@ -1232,7 +1232,7 @@ export default function Wedding({ guest }: { guest?: GuestEntry }) {
             </motion.h2>
             <motion.div
               variants={galleryGridVariants}
-              className="grid grid-cols-2 gap-2 sm:gap-3 max-w-md mx-auto mt-7 w-full"
+              className="grid grid-cols-2 gap-3 sm:gap-4 max-w-lg mx-auto mt-8 w-full"
             >
               {GALLERY_IMAGES.map((src, i) => (
                 <motion.div
@@ -1241,13 +1241,13 @@ export default function Wedding({ guest }: { guest?: GuestEntry }) {
                   variants={galleryCellVariants}
                   whileHover={{ scale: 1.02 }}
                   transition={{ type: "spring", stiffness: 400, damping: 28 }}
-                  className="relative aspect-[4/5] overflow-hidden rounded-sm sm:rounded"
+                  className="relative aspect-[3/4] overflow-hidden rounded sm:rounded-md"
                 >
                   <Image
                     src={src}
                     alt=""
                     fill
-                    sizes="(max-width: 640px) 42vw, 200px"
+                    sizes="(max-width: 640px) 45vw, 240px"
                     className="object-cover"
                   />
                 </motion.div>
