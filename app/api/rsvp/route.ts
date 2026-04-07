@@ -58,6 +58,15 @@ export async function POST(req: Request) {
   }
 
   const guest = getGuestBySlug(guestSlug);
+  if (!guest) {
+    return NextResponse.json(
+      {
+        error:
+          "Bitte öffne die Einladung über deinen persönlichen Einladungslink.",
+      },
+      { status: 403 }
+    );
+  }
   const maxGuests = getGuestCapacity(guest);
   const rawCount = Number(body.attendingCount);
   const attendingCount = Number.isFinite(rawCount)
@@ -69,10 +78,10 @@ export async function POST(req: Request) {
   )}`;
 
   const fields = {
-    number: guest?.number,
+    number: guest.number,
     submitted_at: new Date().toISOString(),
     guest_slug: guestSlug,
-    guest_names: guest?.names.join(", ") || "Öffentliche Einladung",
+    guest_names: guest.names.join(", "),
     response,
     attending_count: attendingCount,
     attending_names: attendingNames,

@@ -34,6 +34,7 @@ type Props = {
 export function RsvpForm({ guest, onOpenChange }: Props) {
   const [open, setOpen] = useState(false);
   const [response, setResponse] = useState<ResponseKind | null>(null);
+  const [publicLinkErrorOpen, setPublicLinkErrorOpen] = useState(false);
 
   function handleCloseModal() {
     setOpen(false);
@@ -41,6 +42,10 @@ export function RsvpForm({ guest, onOpenChange }: Props) {
   }
 
   function pickChoice(kind: ResponseKind) {
+    if (!guest) {
+      setPublicLinkErrorOpen(true);
+      return;
+    }
     setResponse(kind);
     setOpen(true);
     onOpenChange?.(true);
@@ -89,6 +94,46 @@ export function RsvpForm({ guest, onOpenChange }: Props) {
           Not Sure Yet
         </button>
       </div>
+
+      {publicLinkErrorOpen &&
+        typeof document !== "undefined" &&
+        createPortal(
+          <div
+            className="fixed inset-0 z-[210] flex items-center justify-center p-4 sm:p-6"
+            role="presentation"
+          >
+            <button
+              type="button"
+              aria-label="Schließen"
+              className="absolute inset-0 bg-ink/30 backdrop-blur-[3px]"
+              onClick={() => setPublicLinkErrorOpen(false)}
+            />
+            <div
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="public-link-error-title"
+              className="relative z-10 w-full max-w-[min(100vw,380px)] rounded-2xl bg-cream border border-ink/[0.08] shadow-2xl shadow-black/25 p-5 text-center"
+            >
+              <h2
+                id="public-link-error-title"
+                className="font-display text-ink text-[1.25rem] font-light"
+              >
+                Hinweis
+              </h2>
+              <p className="font-display text-ink/85 text-[15px] font-light leading-relaxed mt-3">
+                Bitte öffne die Einladung über deinen persönlichen Einladungslink.
+              </p>
+              <button
+                type="button"
+                onClick={() => setPublicLinkErrorOpen(false)}
+                className="mt-6 w-full py-3 border border-ink/12 font-sc text-ink text-[10px] tracking-[0.23em] uppercase transition-colors duration-200 hover:bg-gold hover:text-white hover:border-gold"
+              >
+                Verstanden
+              </button>
+            </div>
+          </div>,
+          document.body
+        )}
 
       {open &&
         response &&
