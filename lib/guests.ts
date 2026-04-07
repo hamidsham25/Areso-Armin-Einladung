@@ -87,7 +87,7 @@ export function buildDetailsInvitationCopy(guest: GuestEntry | undefined): {
       line1:
         "Wir heiraten — und möchten diesen besonderen Tag mit euch feiern 💍",
       line2:
-        "Wir laden euch zu unserer Hochzeit ein und würden uns sehr freuen, euch dabei an unserer Seite zu haben.",
+        "Wir laden euch herzlich zu unserer Hochzeit ein und würden uns sehr freuen, euch dabei an unserer Seite zu haben.",
     };
   }
   const plural = guestIsPlural(guest);
@@ -99,7 +99,7 @@ export function buildDetailsInvitationCopy(guest: GuestEntry | undefined): {
   const acc = plural ? "euch" : "dich";
   return {
     line1: `Wir heiraten — und möchten diesen besonderen Tag mit ${mit} feiern 💍`,
-    line2: `Liebe ${firstWithNote}, wir laden ${acc} zu unserer Hochzeit ein und würden uns sehr freuen, ${acc} dabei an unserer Seite zu haben.`,
+    line2: `Liebe ${firstWithNote}, wir laden ${acc} herzlich zu unserer Hochzeit ein und würden uns sehr freuen, ${acc} dabei an unserer Seite zu haben.`,
   };
 }
 

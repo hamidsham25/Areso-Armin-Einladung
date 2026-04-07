@@ -818,6 +818,8 @@ function BottomNav({
   isDark: boolean;
   chromeBlocked?: boolean;
 }) {
+  const reduceMotion = useReducedMotion();
+
   return (
     <motion.nav
       initial={{ y: 80, opacity: 0 }}
@@ -871,13 +873,33 @@ function BottomNav({
       <div className={`w-px h-4 mx-1.5 ${isDark ? "bg-cream/15" : "bg-ink/10"}`} />
 
       <button
+        type="button"
         onClick={onToggleMusic}
-        className={`relative p-2 rounded-full transition-opacity duration-200 ${
+        className={`relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full p-2.5 transition-opacity duration-200 ${
           isDark ? "text-cream/70" : "text-ink/70"
         }`}
-        aria-label="Toggle music"
+        aria-label="Musik ein- oder ausschalten"
       >
-        <IconMusic className="w-4 h-4" />
+        <motion.span
+          className="flex h-4 w-4 items-center justify-center"
+          animate={
+            reduceMotion
+              ? { y: 0 }
+              : { y: [0, -6, -1, 0, 0] }
+          }
+          transition={
+            reduceMotion
+              ? undefined
+              : {
+                  duration: 5,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  times: [0, 0.1, 0.18, 0.24, 1],
+                }
+          }
+        >
+          <IconMusic className="w-4 h-4" />
+        </motion.span>
         {!musicPlaying && (
           <span
             aria-hidden="true"
