@@ -2,18 +2,11 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
-import emailjs from "@emailjs/browser";
 import {
-  formatGuestNamesForEmail,
   getGuestCapacity,
-  guestDisplayLabel,
   type GuestEntry,
 } from "@/lib/guests";
-import {
-  buildRsvpEmailTemplateFields,
-  emailJsEnvConfigured,
-  type ResponseKind,
-} from "@/lib/rsvp-email";
+import { type ResponseKind } from "@/lib/rsvp-email";
 
 function initAttendingMap(
   guest: GuestEntry | undefined,
@@ -159,11 +152,9 @@ function RsvpFormInner({
   onClose: () => void;
 }) {
   const slug = guest?.slug ?? "website";
-  const label = guest ? guestDisplayLabel(guest) : "Öffentliche Einladung";
   const namesOnInvite = guest?.names ?? EMPTY_NAMES;
   const hasNameList = namesOnInvite.length > 0;
   const maxGuests = getGuestCapacity(guest);
-  const namesList = formatGuestNamesForEmail(guest);
 
   const [attending, setAttending] = useState<Record<number, boolean>>(() =>
     initAttendingMap(guest, response)
@@ -172,6 +163,7 @@ function RsvpFormInner({
   const [notes, setNotes] = useState("");
   const [honeypot, setHoneypot] = useState("");
   const [validationError, setValidationError] = useState<string | null>(null);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">(
     "idle"
   );
@@ -200,6 +192,7 @@ function RsvpFormInner({
       [index]: !prev[index],
     }));
     setValidationError(null);
+    setSubmitError(null);
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -217,43 +210,40 @@ function RsvpFormInner({
       return;
     }
     setValidationError(null);
-
-    if (!emailJsEnvConfigured()) {
-      setStatus("error");
-      return;
-    }
+    setSubmitError(null);
 
     setStatus("sending");
     try {
-      const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!.trim();
-      const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!.trim();
-      const templateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!.trim();
-
-      const guestCountStr = hasNameList
-        ? String(attendingCount)
-        : String(safeCount);
-
-      const pageUrl =
-        typeof window !== "undefined" ? window.location.href : "";
-
-      const templateParams = buildRsvpEmailTemplateFields({
-        guest,
-        response,
-        guestSlug: slug,
-        hasNameList,
-        namesOnInvite,
-        attendingNames: hasNameList ? attendingNames : "",
-        notAttendingNames: hasNameList ? notAttendingNames : "",
-        guestCountStr,
-        notesTrimmed: notes.trim(),
-        pageUrl,
+      const res = await fetch("/api/rsvp", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          guestSlug: slug,
+          response,
+          attendingCount: hasNameList ? attendingCount : safeCount,
+          attendingNames: hasNameList ? attendingNames : "",
+          notes: notes.trim(),
+        }),
       });
-
-      await emailjs.send(serviceId, templateId, templateParams, {
-        publicKey,
-      });
+      if (!res.ok) {
+        let serverMessage = "";
+        try {
+          const payload = (await res.json()) as { error?: string };
+          serverMessage = (payload.error ?? "").trim();
+        } catch {
+          serverMessage = "";
+        }
+        throw new Error(serverMessage || "RSVP API request failed");
+      }
       setStatus("success");
-    } catch {
+    } catch (error) {
+      if (error instanceof Error && error.message.trim()) {
+        setSubmitError(error.message.trim());
+      } else {
+        setSubmitError(null);
+      }
       setStatus("error");
     }
   }
@@ -298,12 +288,6 @@ function RsvpFormInner({
         {response === "vielleicht" && "Not Sure Yet"}
       </p>
 
-      {guest?.inviteNote && (
-        <p className="font-display text-ink/80 text-[13px] font-light leading-relaxed border border-ink/10 rounded-lg px-3 py-2.5 bg-ink/[0.02]">
-          {guest.inviteNote}
-        </p>
-      )}
-
       {hasNameList && (
         <fieldset className="border-0 p-0 m-0">
           <legend className="font-sc text-ink/50 text-[10px] tracking-[0.2em] uppercase mb-3 block w-full">
@@ -322,6 +306,7 @@ function RsvpFormInner({
                   />
                   <span className="font-display text-[15px] font-light text-ink leading-snug group-hover:text-ink/90">
                     {name}
+                    {guest?.inviteNote?.trim() ? " (ohne Kinder)" : ""}
                   </span>
                 </label>
               </li>
@@ -386,9 +371,8 @@ function RsvpFormInner({
 
       {status === "error" && (
         <p className="font-display text-[13px] text-red-900/80 text-center">
-          {!emailJsEnvConfigured()
-            ? "E-Mail ist noch nicht konfiguriert (Umgebungsvariablen für EmailJS fehlen)."
-            : "Das hat leider nicht geklappt. Bitte versucht es später erneut oder meldet euch direkt."}
+          {submitError ||
+            "Das hat leider nicht geklappt. Bitte versucht es später erneut oder meldet euch direkt."}
         </p>
       )}
 

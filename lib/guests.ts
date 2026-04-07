@@ -1,6 +1,8 @@
 import guestsData from "@/data/guests.json";
 
 export type GuestEntry = {
+  /** Laufende Nummer (in JSON-Reihenfolge), für Airtable-Sortierung */
+  number: number;
   slug: string;
   /** Kurzname für Tab-Titel / E-Mail; optional — Fallback: Namenliste */
   label?: string;
@@ -28,7 +30,13 @@ export function guestDisplayLabel(guest: GuestEntry | undefined): string {
   return "Einladung";
 }
 
-const guests = guestsData as GuestEntry[];
+type GuestDataEntry = Omit<GuestEntry, "number"> & { number?: number };
+
+const guests = (guestsData as GuestDataEntry[]).map((guest, index) => ({
+  ...guest,
+  // Falls keine feste Nummer gepflegt ist: automatisch nach JSON-Reihenfolge.
+  number: guest.number ?? index + 1,
+}));
 
 export function getGuestBySlug(slug: string): GuestEntry | undefined {
   return guests.find((g) => g.slug === slug);
@@ -73,8 +81,6 @@ export function guestIsPlural(guest: GuestEntry): boolean {
 export function buildDetailsInvitationCopy(guest: GuestEntry | undefined): {
   line1: string;
   line2: string;
-  /** Nur bei „ohne Kinder“-Einladungen: klarer Hinweis im Fließtext */
-  line3?: string;
 } {
   if (!guest || guest.names.length === 0) {
     return {
@@ -86,22 +92,21 @@ export function buildDetailsInvitationCopy(guest: GuestEntry | undefined): {
   }
   const plural = guestIsPlural(guest);
   const first = formatFirstNamesGerman(guestFirstNames(guest));
+  const firstWithNote = guest.inviteNote?.trim()
+    ? `${first} (ohne Kinder)`
+    : first;
   const mit = plural ? "euch" : "dir";
   const acc = plural ? "euch" : "dich";
-  const base = {
+  return {
     line1: `Wir heiraten — und möchten diesen besonderen Tag mit ${mit} feiern 💍`,
-    line2: `Liebe ${first}, wir laden ${acc} zu unserer Hochzeit ein und würden uns sehr freuen, ${acc} dabei an unserer Seite zu haben.`,
+    line2: `Liebe ${firstWithNote}, wir laden ${acc} zu unserer Hochzeit ein und würden uns sehr freuen, ${acc} dabei an unserer Seite zu haben.`,
   };
-  if (guest.inviteNote?.trim()) {
-    return { ...base, line3: "Ohne Kinder." };
-  }
-  return base;
 }
 
 /** RSVP-Frist; „gib“ (du) vs „gebt“ (ihr). */
 export function rsvpDeadlineReminder(guest: GuestEntry | undefined): string {
   const plural = guest && guest.names.length > 1;
   return plural
-    ? "Bitte gebt uns bis zum 31.07.2026 eine Rückmeldung!"
-    : "Bitte gib uns bis zum 31.07.2026 eine Rückmeldung!";
+    ? "Bitte gebt uns bis zum 30.06.2026 eine Rückmeldung!"
+    : "Bitte gib uns bis zum 30.06.2026 eine Rückmeldung!";
 }

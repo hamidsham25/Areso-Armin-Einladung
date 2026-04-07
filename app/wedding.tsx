@@ -397,9 +397,10 @@ function VenueIllustration() {
    ================================================================ */
 
 const SCHEDULE = [
+  { time: "16:00", event: "Ankunft" },
   { time: "16:30", event: "Trauung" },
   { time: "17:15", event: "Empfang" },
-  { time: "17:45", event: "Beginn der Feier" },
+  { time: "18:00", event: "Beginn der Feierlichkeiten" },
   { time: "19:00", event: "Essen" },
   { time: "20:30", event: "Programm und Feier" },
 ];
@@ -476,14 +477,14 @@ function Timeline({ isActive }: { isActive: boolean }) {
   };
 
   return (
-    <motion.div variants={sectionItemVariants} className="w-full max-w-[280px] mx-auto mt-10 text-left">
+    <motion.div variants={sectionItemVariants} className="w-full max-w-[280px] mx-auto mt-7 sm:mt-10 text-left">
       <motion.div
         variants={timelineRootVariants}
         initial={false}
         animate={isActive ? "visible" : "hidden"}
       >
         {SCHEDULE.map((item, i) => (
-          <motion.div key={i} variants={timelineRowVariants} className="flex items-start gap-6">
+          <motion.div key={i} variants={timelineRowVariants} className="flex items-start gap-4 sm:gap-6">
             <motion.p
               variants={timelineTimeVariants}
               className="font-display text-ink text-[1.05rem] font-light w-14 text-right shrink-0 pt-0.5"
@@ -493,13 +494,13 @@ function Timeline({ isActive }: { isActive: boolean }) {
             <motion.div variants={columnVariants} className="flex flex-col items-center shrink-0">
               <motion.div
                 variants={timelineDotVariants}
-                className="w-3 h-3 rounded-full bg-gold mt-1.5"
+                className="w-3 h-3 rounded-full bg-gold mt-1 sm:mt-1.5"
               />
               {i < SCHEDULE.length - 1 && (
                 <motion.div
                   variants={timelineLineVariants}
                   style={{ transformOrigin: "top center" }}
-                  className="w-px h-14 bg-gold/25"
+                  className="w-px h-10 sm:h-14 bg-gold/25"
                 />
               )}
             </motion.div>
@@ -1067,14 +1068,6 @@ export default function Wedding({ guest }: { guest?: GuestEntry }) {
             >
               {detailsCopy.line2}
             </motion.p>
-            {detailsCopy.line3 && (
-              <motion.p
-                variants={inviteLineVariants}
-                className="font-display text-gray text-[15px] font-light leading-relaxed mt-5 max-w-[min(90vw,340px)] mx-auto"
-              >
-                {detailsCopy.line3}
-              </motion.p>
-            )}
           </AnimatedSectionContent>
         </section>
 
