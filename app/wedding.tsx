@@ -7,6 +7,7 @@ import { RsvpForm } from "@/app/components/RsvpForm";
 import {
   type GuestEntry,
   buildDetailsInvitationCopy,
+  guestLocale,
   rsvpDeadlineReminder,
 } from "@/lib/guests";
 import {
@@ -240,7 +241,13 @@ const scheduleContainerVariants: SectionContainerVariants = {
 
 /* ── Home: hero house → text (sequence like schedule drama) ── */
 
-function HomeSectionContent({ isActive }: { isActive: boolean }) {
+function HomeSectionContent({
+  isActive,
+  isEnglish = false,
+}: {
+  isActive: boolean;
+  isEnglish?: boolean;
+}) {
   const reduceMotion = useReducedMotion();
   const rm = reduceMotion === true;
 
@@ -327,7 +334,7 @@ function HomeSectionContent({ isActive }: { isActive: boolean }) {
           variants={homeSoftLineVariants}
           className="font-sc text-gold/60 text-[10px] tracking-[0.38em] uppercase mt-6"
         >
-          Hochzeitseinladung
+          {isEnglish ? "Wedding invitation" : "Hochzeitseinladung"}
         </motion.p>
         <motion.div variants={homeSoftLineVariants}>
           <Divider className="mt-9" />
@@ -396,13 +403,24 @@ function VenueIllustration() {
    Schedule timeline
    ================================================================ */
 
-const SCHEDULE = [
+type ScheduleRow = { time: string; event: string };
+
+const SCHEDULE_DE: ScheduleRow[] = [
   { time: "16:00", event: "Ankunft" },
   { time: "16:30", event: "Trauung" },
   { time: "17:15", event: "Empfang" },
   { time: "18:00", event: "Beginn der Feierlichkeiten" },
   { time: "19:00", event: "Essen" },
   { time: "20:30", event: "Programm und Feier" },
+];
+
+const SCHEDULE_EN: ScheduleRow[] = [
+  { time: "16:00", event: "Arrival" },
+  { time: "16:30", event: "Ceremony" },
+  { time: "17:15", event: "Reception" },
+  { time: "18:00", event: "Celebration begins" },
+  { time: "19:00", event: "Dinner" },
+  { time: "20:30", event: "Program & party" },
 ];
 
 const timelineTimeVariants = {
@@ -441,7 +459,13 @@ const timelineLabelVariants = {
   },
 };
 
-function Timeline({ isActive }: { isActive: boolean }) {
+function Timeline({
+  isActive,
+  rows,
+}: {
+  isActive: boolean;
+  rows: readonly ScheduleRow[];
+}) {
   const reduceMotion = useReducedMotion();
   const betweenRows = reduceMotion ? 0 : 0.28;
   const betweenTimeColumnAndLabel = reduceMotion ? 0 : 0.2;
@@ -483,7 +507,7 @@ function Timeline({ isActive }: { isActive: boolean }) {
         initial={false}
         animate={isActive ? "visible" : "hidden"}
       >
-        {SCHEDULE.map((item, i) => (
+        {rows.map((item, i) => (
           <motion.div key={i} variants={timelineRowVariants} className="flex items-start gap-4 sm:gap-6">
             <motion.p
               variants={timelineTimeVariants}
@@ -496,7 +520,7 @@ function Timeline({ isActive }: { isActive: boolean }) {
                 variants={timelineDotVariants}
                 className="w-3 h-3 rounded-full bg-gold mt-1 sm:mt-1.5"
               />
-              {i < SCHEDULE.length - 1 && (
+              {i < rows.length - 1 && (
                 <motion.div
                   variants={timelineLineVariants}
                   style={{ transformOrigin: "top center" }}
@@ -810,6 +834,7 @@ function BottomNav({
   onToggleMusic,
   isDark,
   chromeBlocked,
+  isEnglish = false,
 }: {
   active: SectionId;
   onNavigate: (id: SectionId) => void;
@@ -817,6 +842,7 @@ function BottomNav({
   onToggleMusic: () => void;
   isDark: boolean;
   chromeBlocked?: boolean;
+  isEnglish?: boolean;
 }) {
   const reduceMotion = useReducedMotion();
 
@@ -847,16 +873,24 @@ function BottomNav({
           }`}
           aria-label={
             id === "invite"
-              ? "Einladung"
+              ? isEnglish
+                ? "Invitation"
+                : "Einladung"
               : id === "details"
                 ? "Details"
                 : id === "schedule"
-                  ? "Ablauf"
+                  ? isEnglish
+                    ? "Schedule"
+                    : "Ablauf"
                   : id === "rsvp"
                     ? "RSVP"
                     : id === "gallery"
-                      ? "Galerie"
-                      : "Start"
+                      ? isEnglish
+                        ? "Gallery"
+                        : "Galerie"
+                      : isEnglish
+                        ? "Home"
+                        : "Start"
           }
         >
           <Icon className="w-4 h-4" />
@@ -878,7 +912,9 @@ function BottomNav({
         className={`relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full p-2.5 transition-opacity duration-200 ${
           isDark ? "text-cream/70" : "text-ink/70"
         }`}
-        aria-label="Musik ein- oder ausschalten"
+        aria-label={
+          isEnglish ? "Turn background music on or off" : "Musik ein- oder ausschalten"
+        }
       >
         <motion.span
           className="flex h-4 w-4 items-center justify-center"
@@ -1036,6 +1072,8 @@ export default function Wedding({ guest }: { guest?: GuestEntry }) {
   };
 
   const isDark = DARK_SECTIONS.includes(activeSection);
+  const isEnglish = guestLocale(guest) === "en";
+  const scheduleRows = isEnglish ? SCHEDULE_EN : SCHEDULE_DE;
   const detailsCopy = buildDetailsInvitationCopy(guest);
   const rsvpDeadlineText = rsvpDeadlineReminder(guest);
 
@@ -1057,7 +1095,10 @@ export default function Wedding({ guest }: { guest?: GuestEntry }) {
           ref={(el) => { sectionRefs.current.home = el; }}
           className="snap-section h-[100svh] flex flex-col items-center justify-center bg-cream px-6 pt-6 pb-24 text-center"
         >
-          <HomeSectionContent isActive={activeSection === "home" && homeIntroReady} />
+          <HomeSectionContent
+            isActive={activeSection === "home" && homeIntroReady}
+            isEnglish={isEnglish}
+          />
         </section>
 
         {/* ── EINLADUNG (Gästetext) ────────────────────── */}
@@ -1073,7 +1114,7 @@ export default function Wedding({ guest }: { guest?: GuestEntry }) {
               <IconHeart className="w-8 h-8 text-gold/50 mx-auto" />
             </motion.div>
             <motion.p variants={inviteLineVariants} className="font-sc text-gold/60 text-[10px] tracking-[0.36em] uppercase mt-3">
-              Einladung
+              {isEnglish ? "Invitation" : "Einladung"}
             </motion.p>
             <motion.div variants={inviteLineVariants}>
               <Divider className="mt-6" />
@@ -1140,7 +1181,7 @@ export default function Wedding({ guest }: { guest?: GuestEntry }) {
                 Additional Info
               </p>
               <p className="font-display text-cream/60 text-[15px] font-light mt-2">
-                Parkmöglichkeiten sind gegeben.
+                {isEnglish ? "Parking is available." : "Parkmöglichkeiten sind gegeben."}
               </p>
             </motion.div>
 
@@ -1180,7 +1221,7 @@ export default function Wedding({ guest }: { guest?: GuestEntry }) {
             <motion.div variants={inviteLineVariants}>
               <Divider className="mt-5" />
             </motion.div>
-            <Timeline isActive={activeSection === "schedule"} />
+            <Timeline isActive={activeSection === "schedule"} rows={scheduleRows} />
           </AnimatedSectionContent>
         </section>
 
@@ -1215,14 +1256,19 @@ export default function Wedding({ guest }: { guest?: GuestEntry }) {
               <Divider className="mt-5" />
             </motion.div>
             <motion.p variants={rsvpBodyVariants} className="font-display text-gray text-[15px] font-light leading-relaxed mt-6 max-w-[290px]">
-              Wir freuen uns auf euch und können es nicht erwarten diesen
-              besonderen Tag mit euch zu verbringen!
+              {isEnglish
+                ? "We can't wait to celebrate this special day with you!"
+                : "Wir freuen uns auf euch und können es nicht erwarten diesen besonderen Tag mit euch zu verbringen!"}
             </motion.p>
             <motion.p variants={rsvpBodyVariants} className="font-display text-ink/85 text-[15px] font-light leading-relaxed mt-5 max-w-[290px]">
               {rsvpDeadlineText}
             </motion.p>
             <motion.div variants={rsvpBodyVariants} className="w-full flex justify-center mt-2">
-              <RsvpForm guest={guest} onOpenChange={setRsvpModalOpen} />
+              <RsvpForm
+                guest={guest}
+                locale={guestLocale(guest)}
+                onOpenChange={setRsvpModalOpen}
+              />
             </motion.div>
           </AnimatedSectionContent>
         </section>
@@ -1282,6 +1328,7 @@ export default function Wedding({ guest }: { guest?: GuestEntry }) {
             onToggleMusic={handleToggleMusic}
             isDark={isDark}
             chromeBlocked={rsvpModalOpen}
+            isEnglish={isEnglish}
           />
           <PageDots
             active={activeSection}

@@ -27,11 +27,14 @@ const sectionBtnClass =
 
 type Props = {
   guest?: GuestEntry;
+  /** Steuert RSVP-Modal- und Formularsprache */
+  locale?: "de" | "en";
   /** RSVP-Dialog offen — für Overlay, Nav/Dots im Parent deaktivieren */
   onOpenChange?: (open: boolean) => void;
 };
 
-export function RsvpForm({ guest, onOpenChange }: Props) {
+export function RsvpForm({ guest, locale = "de", onOpenChange }: Props) {
+  const en = locale === "en";
   const [open, setOpen] = useState(false);
   const [response, setResponse] = useState<ResponseKind | null>(null);
   const [publicLinkErrorOpen, setPublicLinkErrorOpen] = useState(false);
@@ -104,7 +107,7 @@ export function RsvpForm({ guest, onOpenChange }: Props) {
           >
             <button
               type="button"
-              aria-label="Schließen"
+              aria-label={en ? "Close" : "Schließen"}
               className="absolute inset-0 bg-ink/30 backdrop-blur-[3px]"
               onClick={() => setPublicLinkErrorOpen(false)}
             />
@@ -118,17 +121,19 @@ export function RsvpForm({ guest, onOpenChange }: Props) {
                 id="public-link-error-title"
                 className="font-display text-ink text-[1.25rem] font-light"
               >
-                Hinweis
+                {en ? "Note" : "Hinweis"}
               </h2>
               <p className="font-display text-ink/85 text-[15px] font-light leading-relaxed mt-3">
-                Bitte öffne die Einladung über deinen persönlichen Einladungslink.
+                {en
+                  ? "Please open the invitation using your personal invitation link."
+                  : "Bitte öffne die Einladung über deinen persönlichen Einladungslink."}
               </p>
               <button
                 type="button"
                 onClick={() => setPublicLinkErrorOpen(false)}
                 className="mt-6 w-full py-3 border border-ink/12 font-sc text-ink text-[10px] tracking-[0.23em] uppercase transition-colors duration-200 hover:bg-gold hover:text-white hover:border-gold"
               >
-                Verstanden
+                {en ? "OK" : "Verstanden"}
               </button>
             </div>
           </div>,
@@ -145,7 +150,7 @@ export function RsvpForm({ guest, onOpenChange }: Props) {
           >
             <button
               type="button"
-              aria-label="Schließen"
+              aria-label={en ? "Close" : "Schließen"}
               className="absolute inset-0 bg-ink/25 backdrop-blur-[3px]"
               onClick={handleCloseModal}
             />
@@ -166,7 +171,7 @@ export function RsvpForm({ guest, onOpenChange }: Props) {
                 type="button"
                 onClick={handleCloseModal}
                 className="p-2 -mr-1 rounded-full text-ink/50 hover:text-ink hover:bg-ink/[0.04] transition-colors"
-                aria-label="Fenster schließen"
+                aria-label={en ? "Close window" : "Fenster schließen"}
               >
                 <IconClose />
               </button>
@@ -175,6 +180,7 @@ export function RsvpForm({ guest, onOpenChange }: Props) {
               <RsvpFormInner
                 key={`${response}-${guest?.slug ?? "x"}`}
                 guest={guest}
+                locale={locale}
                 response={response}
                 onClose={handleCloseModal}
               />
@@ -189,13 +195,16 @@ export function RsvpForm({ guest, onOpenChange }: Props) {
 
 function RsvpFormInner({
   guest,
+  locale = "de",
   response,
   onClose,
 }: {
   guest?: GuestEntry;
+  locale?: "de" | "en";
   response: ResponseKind;
   onClose: () => void;
 }) {
+  const en = locale === "en";
   const slug = guest?.slug ?? "website";
   const namesOnInvite = guest?.names ?? EMPTY_NAMES;
   const hasNameList = namesOnInvite.length > 0;
@@ -250,7 +259,9 @@ function RsvpFormInner({
 
     if (hasNameList && response === "ja" && attendingCount === 0) {
       setValidationError(
-        "Bitte wählt aus, wer von der Einladung kommt — mindestens eine Person."
+        en
+          ? "Please select who from your invitation is attending — at least one guest."
+          : "Bitte wählt aus, wer von der Einladung kommt — mindestens eine Person."
       );
       return;
     }
@@ -303,20 +314,22 @@ function RsvpFormInner({
           ✓
         </p>
         <p className="font-display text-ink text-[1.25rem] font-light leading-snug">
-          Bestätigung
+          {en ? "Confirmation" : "Bestätigung"}
         </p>
         <p className="font-display text-ink/85 text-[15px] font-light leading-relaxed mt-3">
-          Vielen Dank — wir haben eure Rückmeldung erhalten und freuen uns sehr.
+          {en
+            ? "Thank you — we've received your reply and are so happy to hear from you."
+            : "Vielen Dank — wir haben eure Rückmeldung erhalten und freuen uns sehr."}
         </p>
         <p className="font-display text-gray text-[13px] font-light mt-2">
-          Ihr könnt dieses Fenster schließen.
+          {en ? "You can close this window." : "Ihr könnt dieses Fenster schließen."}
         </p>
         <button
           type="button"
           onClick={onClose}
           className="mt-8 w-full py-3 border border-ink/12 font-sc text-ink text-[10px] tracking-[0.23em] uppercase transition-colors duration-200 hover:bg-gold hover:text-white hover:border-gold"
         >
-          Schließen
+          {en ? "Close" : "Schließen"}
         </button>
       </div>
     );
@@ -336,7 +349,9 @@ function RsvpFormInner({
       {hasNameList && (
         <fieldset className="border-0 p-0 m-0">
           <legend className="font-sc text-ink/50 text-[10px] tracking-[0.2em] uppercase mb-3 block w-full">
-            Wer kommt? (für den Tischplan)
+            {en
+              ? "Who is coming? (for the seating plan)"
+              : "Wer kommt? (für den Tischplan)"}
           </legend>
           <ul className="flex flex-col gap-2.5">
             {namesOnInvite.map((name, i) => (
@@ -351,14 +366,19 @@ function RsvpFormInner({
                   />
                   <span className="font-display text-[15px] font-light text-ink leading-snug group-hover:text-ink/90">
                     {name}
-                    {guest?.inviteNote?.trim() ? " (ohne Kinder)" : ""}
+                    {guest?.inviteNote?.trim()
+                      ? en
+                        ? " (without children)"
+                        : " (ohne Kinder)"
+                      : ""}
                   </span>
                 </label>
               </li>
             ))}
           </ul>
           <p className="font-display text-gray text-[12px] font-light mt-3">
-            Ausgewählt: {attendingCount} von {namesOnInvite.length}
+            {en ? "Selected:" : "Ausgewählt:"} {attendingCount}{" "}
+            {en ? "of" : "von"} {namesOnInvite.length}
           </p>
         </fieldset>
       )}
@@ -366,7 +386,7 @@ function RsvpFormInner({
       {!hasNameList && (
         <label className="block">
           <span className="font-sc text-ink/50 text-[10px] tracking-[0.2em] uppercase">
-            Anzahl Personen (max. {maxGuests})
+            {en ? "Number of guests" : "Anzahl Personen"} (max. {maxGuests})
           </span>
           <input
             type="number"
@@ -386,7 +406,7 @@ function RsvpFormInner({
 
       <label className="block">
         <span className="font-sc text-ink/50 text-[10px] tracking-[0.2em] uppercase">
-          Nachricht (optional)
+          {en ? "Message (optional)" : "Nachricht (optional)"}
         </span>
         <textarea
           rows={3}
@@ -417,7 +437,9 @@ function RsvpFormInner({
       {status === "error" && (
         <p className="font-display text-[13px] text-red-900/80 text-center">
           {submitError ||
-            "Das hat leider nicht geklappt. Bitte versucht es später erneut oder meldet euch direkt."}
+            (en
+              ? "That didn't work. Please try again later or reach out to us directly."
+              : "Das hat leider nicht geklappt. Bitte versucht es später erneut oder meldet euch direkt.")}
         </p>
       )}
 
@@ -426,7 +448,13 @@ function RsvpFormInner({
         disabled={status === "sending"}
         className="w-full py-3 border border-ink/12 font-sc text-ink text-[10px] tracking-[0.23em] uppercase transition-colors duration-200 hover:bg-gold hover:text-white hover:border-gold disabled:opacity-40 disabled:pointer-events-none"
       >
-        {status === "sending" ? "Wird gesendet…" : "Absenden"}
+        {status === "sending"
+          ? en
+            ? "Sending…"
+            : "Wird gesendet…"
+          : en
+            ? "Submit"
+            : "Absenden"}
       </button>
     </form>
   );

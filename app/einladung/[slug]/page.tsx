@@ -1,5 +1,10 @@
 import Wedding from "@/app/wedding";
-import { getAllGuests, getGuestBySlug, guestDisplayLabel } from "@/lib/guests";
+import {
+  getAllGuests,
+  getGuestBySlug,
+  guestDisplayLabel,
+  guestLocale,
+} from "@/lib/guests";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
@@ -20,9 +25,12 @@ export async function generateMetadata({
     return { title: "Einladung — Areso & Armin" };
   }
   const label = guestDisplayLabel(guest);
+  const en = guestLocale(guest) === "en";
   return {
     title: `${label} — Areso & Armin`,
-    description: `Hochzeitseinladung für ${label}`,
+    description: en
+      ? `Wedding invitation for ${label}`
+      : `Hochzeitseinladung für ${label}`,
   };
 }
 

@@ -240,6 +240,7 @@
   },
   {
     "slug": "mino",
+    "locale": "en",
     "side": "areso",
     "names": [
       "Mino",
@@ -248,19 +249,20 @@
       "Liiban",
       "Faarzien"
     ],
-    "greeting": "Liebe Gäste,",
-    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen."
+    "greeting": "Dear guests,",
+    "namesLine": "We are very pleased to welcome you to our celebration."
   },
   {
     "slug": "neihra",
+    "locale": "en",
     "side": "areso",
     "names": [
       "Neihra",
       "Lamia",
       "Saiqa"
     ],
-    "greeting": "Liebe Gäste,",
-    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen."
+    "greeting": "Dear guests,",
+    "namesLine": "We are very pleased to welcome you to our celebration."
   },
   {
     "slug": "rehana",
@@ -541,6 +543,7 @@
   },
   {
     "slug": "maryjahn",
+    "locale": "en",
     "side": "armin",
     "names": [
       "Maryjahn",
@@ -549,11 +552,12 @@
       "Antoine",
       "Fiance"
     ],
-    "greeting": "Liebe Gäste,",
-    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen."
+    "greeting": "Dear guests,",
+    "namesLine": "We are very pleased to welcome you to our celebration."
   },
   {
     "slug": "azar",
+    "locale": "en",
     "side": "armin",
     "names": [
       "Azar",
@@ -561,8 +565,8 @@
       "Adrian",
       "Arman"
     ],
-    "greeting": "Liebe Gäste,",
-    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen."
+    "greeting": "Dear guests,",
+    "namesLine": "We are very pleased to welcome you to our celebration."
   },
   {
     "slug": "behzad",
