@@ -577,5 +577,16 @@
     ],
     "greeting": "Liebe Gäste,",
     "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen."
+  },
+  {
+    "slug": "zia-mozdja",
+    "locale": "en",
+    "side": "areso",
+    "names": [
+      "Zia",
+      "Mozdja"
+    ],
+    "greeting": "Dear guests,",
+    "namesLine": "We are very pleased to welcome you to our celebration."
   }
 ]
