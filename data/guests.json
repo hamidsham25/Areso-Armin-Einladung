@@ -588,5 +588,15 @@
     ],
     "greeting": "Dear guests,",
     "namesLine": "We are very pleased to welcome you to our celebration."
+  },
+  {
+    "slug": "laura-mathis",
+    "side": "areso",
+    "names": [
+      "Laura",
+      "Mathis"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen."
   }
 ]
