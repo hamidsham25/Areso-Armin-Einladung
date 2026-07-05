@@ -183,10 +183,11 @@
     "slug": "janine",
     "side": "areso",
     "names": [
-      "Janine"
+      "Janine",
+      "Asil"
     ],
     "greeting": "Liebe Gäste,",
-    "namesLine": "wir freuen uns sehr, dich bei unserer Feier begrüßen zu dürfen."
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen."
   },
   {
     "slug": "mihria",
@@ -598,5 +599,77 @@
     ],
     "greeting": "Liebe Gäste,",
     "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen."
+  },
+  {
+    "slug": "hannah",
+    "side": "armin",
+    "names": [
+      "Hannah",
+      "Begleitung"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen."
+  },
+  {
+    "slug": "jannis",
+    "side": "armin",
+    "names": [
+      "Jannis",
+      "Begleitung"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen.",
+    "inviteNote": "Ohne Kinder."
+  },
+  {
+    "slug": "sonja",
+    "side": "armin",
+    "names": [
+      "Sonja",
+      "Andreas"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen."
+  },
+  {
+    "slug": "sultan",
+    "side": "areso",
+    "names": [
+      "Sultan",
+      "Niazi"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen."
+  },
+  {
+    "slug": "tamim",
+    "side": "areso",
+    "names": [
+      "Tamim",
+      "Khanom"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen.",
+    "inviteNote": "Ohne Kinder."
+  },
+  {
+    "slug": "raufi",
+    "side": "areso",
+    "names": [
+      "Raufi",
+      "Khanom"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen.",
+    "inviteNote": "Ohne Kinder."
+  },
+  {
+    "slug": "osman",
+    "side": "areso",
+    "names": [
+      "Osman"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, dich bei unserer Feier begrüßen zu dürfen."
   }
 ]
