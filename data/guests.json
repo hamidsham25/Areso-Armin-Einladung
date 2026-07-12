@@ -671,5 +671,15 @@
     ],
     "greeting": "Liebe Gäste,",
     "namesLine": "wir freuen uns sehr, dich bei unserer Feier begrüßen zu dürfen."
+  },
+  {
+    "slug": "tanja",
+    "side": "armin",
+    "names": [
+      "Tanja",
+      "Holger"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen."
   }
 ]
