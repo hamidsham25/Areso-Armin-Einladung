@@ -681,5 +681,16 @@
     ],
     "greeting": "Liebe Gäste,",
     "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen."
+  },
+  {
+    "slug": "goli",
+    "side": "areso",
+    "names": [
+      "Goli",
+      "Jahangir",
+      "Daniel"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen."
   }
 ]
