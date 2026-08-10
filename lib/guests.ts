@@ -143,10 +143,10 @@ export function buildDetailsInvitationCopy(guest: GuestEntry | undefined): {
 /** RSVP-Frist; „gib“ (du) vs „gebt“ (ihr). */
 export function rsvpDeadlineReminder(guest: GuestEntry | undefined): string {
   if (guestLocale(guest) === "en") {
-    return "Please let us know by July 30, 2026!";
+    return "Please let us know by August 16, 2026!";
   }
   const plural = guest && guest.names.length > 1;
   return plural
-    ? "Bitte gebt uns bis zum 30.07.2026 eine Rückmeldung!"
-    : "Bitte gib uns bis zum 30.07.2026 eine Rückmeldung!";
+    ? "Bitte gebt uns bis zum 16.08.2026 eine Rückmeldung!"
+    : "Bitte gib uns bis zum 16.08.2026 eine Rückmeldung!";
 }
