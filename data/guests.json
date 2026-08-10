@@ -692,5 +692,49 @@
     ],
     "greeting": "Liebe Gäste,",
     "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen."
+  },
+  {
+    "slug": "toni",
+    "side": "areso",
+    "names": [
+      "Toni",
+      "Marieke"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen.",
+    "inviteNote": "Ohne Kinder."
+  },
+  {
+    "slug": "jan",
+    "side": "areso",
+    "names": [
+      "Jan",
+      "Lara"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen.",
+    "inviteNote": "Ohne Kinder."
+  },
+  {
+    "slug": "sarah",
+    "side": "areso",
+    "names": [
+      "Sarah",
+      "Patrick"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen.",
+    "inviteNote": "Ohne Kinder."
+  },
+  {
+    "slug": "irina",
+    "side": "areso",
+    "names": [
+      "Irina",
+      "Dimitros"
+    ],
+    "greeting": "Liebe Gäste,",
+    "namesLine": "wir freuen uns sehr, euch bei unserer Feier begrüßen zu dürfen.",
+    "inviteNote": "Ohne Kinder."
   }
 ]
